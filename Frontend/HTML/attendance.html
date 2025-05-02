@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance</title>
+  <link rel="stylesheet" href="../CSS/attendance.css">
+</head>
+<body>
+  <div class="navbar">
+    <h1 class="title">Student Management System</h1>
+    <div class="nav-link">
+        <a href="/Frontend/HTML/home.html" class="nav-button">Home</a>
+        <a href="/Frontend/HTML/attendance.html" class="nav-button">Attendance</a>
+        <a href="/Frontend/HTML/studentdetail.html" class="nav-button">Student Detail</a>
+        <a href="/Frontend/HTML/adddetails.html" class="nav-button">ADD Detail</a>
+        <a href="/Frontend/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
+        <a href="/Frontend/HTML/logout.html" class="nav-button">LogOut</a>
+    </div>
+</div>
+  <h1>Student Attendance</h1>
+  <form id="attendanceForm">
+    <table>
+      <thead>
+        <tr>
+          <th>S.NO</th>
+          <th>Student Name</th>
+          <th class="present">Present</th>
+          <th class="absent">Absent</th>
+        </tr>
+      </thead>
+      <tbody id="attendanceTableBody">
+        <!-- Students will be inserted here -->
+      </tbody>
+    </table>
+    <button type="submit">Submit Attendance</button>
+  </form>
+
+  <script type="module" src="../JS/attendance.js"></script>
+</body>
+</html>

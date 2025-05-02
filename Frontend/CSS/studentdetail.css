@@ -1,0 +1,123 @@
+body {
+    /* font-family: 'Arial', sans-serif; */
+    margin: 0;
+    background: rgb(104,182,205);
+    background: linear-gradient(90deg, rgba(104,182,205,1) 0%, rgba(126,102,196,1) 50%, rgba(107,163,219,1) 100%);
+  
+}
+
+.navbar {
+    background: linear-gradient(135deg, #4d81b6, #9eafc0);
+    /* background-color: #6299c9; */
+    color: white;
+    padding: 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-wrap: nowrap; /* Keep title and buttons in one line */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    gap: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.title {
+    font-size: 2rem;
+    color: white;
+    margin: 0;
+    white-space: nowrap;
+    font-family: 'Lobste'cursive;
+
+}
+
+.nav-link {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    overflow-x: auto;     /* Enables horizontal scroll if buttons overflow */
+    max-width: 100%; 
+    min-width: 0;
+}
+
+.nav-button {
+    padding: 15px 16px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #e78fe3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.nav-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.container {
+    max-width: 900px;
+    margin: 100px auto 20px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #3498db;
+    color: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    .title {
+        font-size: 1.2rem;
+        text-align: left;
+    }
+
+    .nav-button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}

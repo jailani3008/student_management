@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width=device-width,initial-scale=1.0">
+    <title>Student Page</title>
+    <link rel="stylesheet" href="/Frontend/CSS/studentdetail.css">
+</head>
+<body>
+    <div class="navbar">
+        <h1 class="title">Student Management System</h1>
+        <div class="nav-link">
+            <a href="/Frontend/HTML/home.html" class="nav-button">Home</a>
+            <a href="/Frontend/HTML/attendance.html" class="nav-button">Attendance</a>
+            <a href="/Frontend/HTML/studentdetail.html" class="nav-button">Student Detail</a>
+            <a href="/Frontend/HTML/adddetails.html" class="nav-button">ADD Detail</a>
+            <a href="/Frontend/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
+            <a href="/Frontend/HTML/logout.html" class="nav-button" id="logoutBtn">LogOut</a>
+        </div>
+    </div>
+    <div class="container">
+        <h2>Student Details</h2>
+        <table id="studentTable">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script src="/Frontend/JS/studentdetail.js"></script>
+</body>
+</html>
