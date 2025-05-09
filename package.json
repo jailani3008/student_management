@@ -12,8 +12,10 @@
     "pg": "^8.14.1"
   },
   "scripts": {
+    "dev": "tsx Backend/server.ts",
     "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +29,7 @@
     "@types/node": "^22.14.0",
     "@types/pg": "^8.11.11",
     "cors": "^2.8.5",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
   "description": ""
