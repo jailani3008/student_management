@@ -14,7 +14,7 @@ interface AttendanceRecord {
   
   async function fetchLatestAttendanceSummary(): Promise<void> {
     try {
-      const response = await fetch("http://localhost:3000/latest-attendance-summary");
+      const response = await fetch("https://student-management-1-xok5.onrender.com/latest-attendance-summary");
       const data: AttendanceSummaryResponse = await response.json();
   
       let total = 0;

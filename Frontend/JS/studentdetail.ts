@@ -19,7 +19,7 @@ interface Student {
     const handleDeleteStudent = async (studentId: string): Promise<void> => {
       if (confirm('Are you sure you want to delete this student?')) {
         try {
-          const response = await fetch(`http://localhost:3000/api/deleteStudent/${studentId}`, {
+          const response = await fetch(`https://student-management-1-xok5.onrender.com/api/deleteStudent/${studentId}`, {
             method: 'DELETE'
           });
   
@@ -67,7 +67,7 @@ interface Student {
   
     const fetchStudents = async (): Promise<void> => {
       try {
-        const response = await fetch('http://localhost:3000/api/getStudents');
+        const response = await fetch('https://student-management-1-xok5.onrender.com/api/getStudents');
         if (response.ok) {
           const students = await response.json();
           renderStudents(students);

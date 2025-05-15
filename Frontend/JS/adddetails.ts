@@ -7,11 +7,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const nameInput = document.getElementById('name') as HTMLInputElement;
     const classInput = document.getElementById('class') as HTMLInputElement;
     const emailInput = document.getElementById('email') as HTMLInputElement;
+
   
     // If editing, fetch and fill student details
     if (studentIdParam) {
       try {
-        const response = await fetch(`http://localhost:3000/api/getStudents/${studentIdParam}`);
+        const response = await fetch(`https://student-management-1-xok5.onrender.com/api/getStudents/${studentIdParam}`);
         if (response.ok) {
           const student = await response.json();
   
@@ -42,8 +43,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
   
       const apiUrl = studentIdParam
-        ? `http://localhost:3000/api/students/${studentIdParam}` // PUT
-        : 'http://localhost:3000/api/addStudent';                // POST
+        ? `https://student-management-1-xok5.onrender.com/api/students/${studentIdParam}` // PUT
+        : 'https://student-management-1-xok5.onrender.com/api/addStudent';                // POST
   
       const method = studentIdParam ? 'PUT' : 'POST';
   

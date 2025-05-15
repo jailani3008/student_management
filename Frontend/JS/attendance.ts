@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tbody = document.getElementById('attendanceTableBody')!;
   
     try {
-      const response = await fetch('http://localhost:3000/api/getStudents');
+      const response = await fetch('https://student-management-1-xok5.onrender.com/api/getStudents');
       const students = await response.json();
   
       students.forEach((student: any,index: any) => {
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
   
       try {
-        const response = await fetch('http://localhost:3000/api/attendance', {
+        const response = await fetch('https://student-management-1-xok5.onrender.com/api/attendance', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
