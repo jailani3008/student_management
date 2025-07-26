@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,267 +7,444 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-// import express, { Application, Request, Response, NextFunction } from 'express';
-const express = require('express');
-const bodyParser = require('body-parser');
-const pg_1 = require("pg");
-//import editstd from './editstd';
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
-const path = require('path');
-const app = express();
-const port = 3000;
-const pool = new pg_1.Pool({
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var _this = this;
+// If using TypeScript, use import; otherwise use require as in your original file
+var express = require('express');
+var bodyParser = require('body-parser');
+var Pool = require('pg').Pool;
+var bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+var cors = require('cors');
+var path = require('path');
+var app = express();
+var port = process.env.PORT || 3000;
+// PostgreSQL connection settings (adjust as needed)
+var pool = new Pool({
     user: 'postgres',
-    host: 'localhost',
+    host: 'localhost', // Localhost for local PG
     database: 'student_management',
-    password: '123456',
-    port: 5432,
+    password: '123456', // Change if needed
+    port: 5432
 });
-app.use(cors());
+// Middleware
+app.use(cors()); // Opens up for local frontend dev
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// Serve frontend static files from the local frontend build directory
 app.use(express.static(path.join(__dirname, '../Frontend')));
-/*****************REGISTER****************/
-app.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password } = req.body;
-    console.log('Received register request:', req.body);
-    try {
-        const hashedPassword = yield bcrypt.hash(password, 10);
-        console.log('Hashed Password:', hashedPassword);
-        const result = yield pool.query('INSERT INTO users (username, password) VALUES($1, $2) RETURNING id, username', [username, hashedPassword]);
-        console.log('Result:', result.rows[0]);
-        res.status(201).json({
-            message: 'User registered successfully',
-            user: result.rows[0]
-        });
-        return;
-    }
-    catch (err) {
-        console.log('Error:', err);
-        if (err === '23505') {
-            res.status(409).send('Username already exists');
-            return;
+/***************** REGISTER ****************/
+app.post('/register', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, username, password, hashedPassword, result, err_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.body, username = _a.username, password = _a.password;
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, bcrypt.hash(password, 10)];
+            case 2:
+                hashedPassword = _b.sent();
+                return [4 /*yield*/, pool.query('INSERT INTO users (username, password) VALUES($1, $2) RETURNING id, username', [username, hashedPassword])];
+            case 3:
+                result = _b.sent();
+                res.status(201).json({
+                    message: 'User registered successfully',
+                    user: result.rows[0]
+                });
+                return [3 /*break*/, 5];
+            case 4:
+                err_1 = _b.sent();
+                if (err_1.code === '23505') {
+                    // Unique violation error code in PG
+                    res.status(409).send('Username already exists');
+                }
+                else {
+                    res.status(500).send('Error registering user');
+                }
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
-        res.status(500).send('Error registering user');
-    }
-}));
-/********************LOGIN***********************/
-app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password } = req.body;
-    try {
-        const result = yield pool.query('SELECT * FROM users WHERE username = $1', [username]);
-        const user = result.rows[0];
-        console.log("request body", req.body);
-        if (!user || !(yield bcrypt.compare(password, user.password))) {
-            res.status(401).send('Invalid credentials');
-            return;
+    });
+}); });
+/***************** LOGIN ******************/
+app.post('/login', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, username, password, result, user, _b, token, err_2;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _a = req.body, username = _a.username, password = _a.password;
+                _c.label = 1;
+            case 1:
+                _c.trys.push([1, 5, , 6]);
+                return [4 /*yield*/, pool.query('SELECT * FROM users WHERE username = $1', [username])];
+            case 2:
+                result = _c.sent();
+                user = result.rows[0];
+                _b = !user;
+                if (_b) return [3 /*break*/, 4];
+                return [4 /*yield*/, bcrypt.compare(password, user.password)];
+            case 3:
+                _b = !(_c.sent());
+                _c.label = 4;
+            case 4:
+                if (_b) {
+                    res.status(401).send('Invalid credentials');
+                    return [2 /*return*/];
+                }
+                token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+                res.json({ token: token });
+                return [3 /*break*/, 6];
+            case 5:
+                err_2 = _c.sent();
+                res.status(500).send('Error logging in');
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
-        const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
-        res.json({ token });
-    }
-    catch (err) {
-        res.status(500).send('Error logging in');
-    }
-}));
-/***********ADD STUDENT DETAIL**************/
-app.post('/api/addStudent', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { studentId, name, class: classValue, email } = req.body;
-    console.log("Received student data:", req.body);
-    try {
-        const client = yield pool.connect();
-        try {
-            yield client.query('BEGIN');
-            const result = yield client.query('INSERT INTO students(studentId, name, class, email) VALUES ($1, $2, $3, $4) RETURNING studentId', [studentId, name, classValue, email]);
-            yield client.query('COMMIT');
-            res.status(201).send('Student added successfully');
+    });
+}); });
+/*********** ADD STUDENT DETAIL ************/
+app.post('/api/addStudent', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, studentId, name, classValue, email, client, error_1, error_2;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.body, studentId = _a.studentId, name = _a.name, classValue = _a.class, email = _a.email;
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 11, , 12]);
+                return [4 /*yield*/, pool.connect()];
+            case 2:
+                client = _b.sent();
+                _b.label = 3;
+            case 3:
+                _b.trys.push([3, 7, 9, 10]);
+                return [4 /*yield*/, client.query('BEGIN')];
+            case 4:
+                _b.sent();
+                return [4 /*yield*/, client.query('INSERT INTO students(studentId, name, class, email) VALUES ($1, $2, $3, $4) RETURNING studentId', [studentId, name, classValue, email])];
+            case 5:
+                _b.sent();
+                return [4 /*yield*/, client.query('COMMIT')];
+            case 6:
+                _b.sent();
+                res.status(201).send('Student added successfully');
+                return [3 /*break*/, 10];
+            case 7:
+                error_1 = _b.sent();
+                return [4 /*yield*/, client.query('ROLLBACK')];
+            case 8:
+                _b.sent();
+                console.error('Error adding student:', error_1);
+                res.status(500).json({ error: 'Error adding student' });
+                return [3 /*break*/, 10];
+            case 9:
+                client.release();
+                return [7 /*endfinally*/];
+            case 10: return [3 /*break*/, 12];
+            case 11:
+                error_2 = _b.sent();
+                console.error('Error connecting to the database:', error_2);
+                res.status(500).send('Error connecting to the database');
+                return [3 /*break*/, 12];
+            case 12: return [2 /*return*/];
         }
-        catch (error) {
-            yield client.query('ROLLBACK');
-            console.error('Error adding student:', error);
-            res.status(500).json({ error: 'Error adding student' });
+    });
+}); });
+/********** GET ALL STUDENT DETAIL *********/
+app.get('/api/getStudents', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var client, result, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, pool.connect()];
+            case 1:
+                client = _a.sent();
+                return [4 /*yield*/, client.query('SELECT * FROM students')];
+            case 2:
+                result = _a.sent();
+                client.release();
+                res.json(result.rows);
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _a.sent();
+                console.error('Error fetching students:', error_3);
+                res.status(500).send('Error fetching students');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
-        finally {
-            client.release();
+    });
+}); });
+/******* DELETE STUDENT DETAIL ************/
+app.delete('/api/deleteStudent/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var studentId, client, result, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                studentId = req.params.studentId;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 6, , 7]);
+                return [4 /*yield*/, pool.connect()];
+            case 2:
+                client = _a.sent();
+                return [4 /*yield*/, client.query('BEGIN')];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, client.query('DELETE FROM students WHERE studentId = $1 RETURNING studentId', [studentId])];
+            case 4:
+                result = _a.sent();
+                return [4 /*yield*/, client.query('COMMIT')];
+            case 5:
+                _a.sent();
+                client.release();
+                if (result.rows.length > 0) {
+                    res.status(200).send('Student deleted successfully');
+                }
+                else {
+                    res.status(404).send('Student not found');
+                }
+                return [3 /*break*/, 7];
+            case 6:
+                error_4 = _a.sent();
+                console.error('Error deleting student:', error_4);
+                res.status(500).send('Error deleting student');
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
-    }
-    catch (error) {
-        console.error('Error connecting to the database:', error);
-        res.status(500).send('Error connecting to the database');
-    }
-}));
-/**********GET ALL STUDENT DETAIL**********/
-app.get('/api/getStudents', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const client = yield pool.connect();
-        const result = yield client.query('SELECT * FROM students');
-        client.release();
-        res.json(result.rows);
-    }
-    catch (error) {
-        console.error('Error fetching students:', error);
-        res.status(500).send('Error fetching students');
-    }
-}));
-/*******DELETE STUDENT DETAIL**********/
-app.delete('/api/deleteStudent/:studentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const studentId = req.params.studentId;
-    try {
-        const client = yield pool.connect();
-        yield client.query('BEGIN');
-        const result = yield client.query('DELETE FROM students WHERE studentId = $1 RETURNING studentId', [studentId]);
-        yield client.query('COMMIT');
-        client.release();
-        if (result.rows.length > 0) {
-            res.status(200).send('Student deleted successfully');
+    });
+}); });
+/***** GET STUDENT DETAIL USING STUDENTID *****/
+app.get('/api/getStudents/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var studentId, client, result, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                studentId = req.params.studentId;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, pool.connect()];
+            case 2:
+                client = _a.sent();
+                return [4 /*yield*/, client.query('SELECT * FROM students WHERE studentId = $1', [studentId])];
+            case 3:
+                result = _a.sent();
+                client.release();
+                if (result.rows.length > 0) {
+                    res.json(result.rows[0]);
+                }
+                else {
+                    res.status(404).send('Student not found');
+                }
+                return [3 /*break*/, 5];
+            case 4:
+                error_5 = _a.sent();
+                console.error('Error fetching student:', error_5);
+                res.status(500).send('Error fetching student');
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
-        else {
-            res.status(404).send('Student not found');
+    });
+}); });
+// Secondary student GET endpoint ("student_id" vs "studentId")
+app.get('/api/students/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var studentId, result, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                studentId = req.params.studentId;
+                return [4 /*yield*/, pool.query('SELECT * FROM students WHERE student_id = $1', [studentId])];
+            case 1:
+                result = _a.sent();
+                if (result.rows.length === 0) {
+                    return [2 /*return*/, res.status(404).json({ message: 'Student not found' })];
+                }
+                res.json(result.rows[0]);
+                return [3 /*break*/, 3];
+            case 2:
+                error_6 = _a.sent();
+                console.error('Error fetching student:', error_6);
+                res.status(500).json({ message: 'Server error' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
-    }
-    catch (error) {
-        console.error('Error deleting student:', error);
-        res.status(500).send('Error deleting student');
-    }
-}));
-/*************GET STUDENT DETAIL USING STUDENTID************/
-app.get('/api/getStudents/:studentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const studentId = req.params.studentId;
-    try {
-        const client = yield pool.connect();
-        const result = yield client.query('SELECT * FROM students WHERE studentId = $1', [studentId]);
-        client.release();
-        if (result.rows.length > 0) {
-            res.json(result.rows[0]);
-        }
-        else {
-            res.status(404).send('Student not found');
-        }
-    }
-    catch (error) {
-        console.error('Error fetching student:', error);
-        res.status(500).send('Error fetching student');
-    }
-}));
-app.get('/api/students/:studentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { studentId } = req.params;
-        const result = yield pool.query('SELECT * FROM students WHERE student_id = $1', [studentId]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Student not found' });
-        }
-        res.json(result.rows[0]);
-    }
-    catch (error) {
-        console.error('Error fetching student:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-}));
+    });
+}); });
 // Update student
-app.put('/api/students/:studentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { studentId } = req.params;
-        const { name, class: className, email } = req.body;
-        console.log('Updating student:', studentId);
-        const result = yield pool.query(`UPDATE students 
-             SET name = $1, class = $2, email = $3 
-             WHERE "studentid" = $4 
-             RETURNING *`, [name, className, email, studentId]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Student not found' });
+app.put('/api/students/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var studentId, _a, name_1, className, email, result, error_7;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 2, , 3]);
+                studentId = req.params.studentId;
+                _a = req.body, name_1 = _a.name, className = _a.class, email = _a.email;
+                return [4 /*yield*/, pool.query("UPDATE students \n             SET name = $1, class = $2, email = $3 \n             WHERE \"studentid\" = $4 \n             RETURNING *", [name_1, className, email, studentId])];
+            case 1:
+                result = _b.sent();
+                if (result.rows.length === 0) {
+                    return [2 /*return*/, res.status(404).json({ message: 'Student not found' })];
+                }
+                res.json(result.rows[0]);
+                return [3 /*break*/, 3];
+            case 2:
+                error_7 = _b.sent();
+                console.error('Error updating student:', error_7);
+                res.status(500).json({ message: 'Server error' });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
-        res.json(result.rows[0]);
-    }
-    catch (error) {
-        console.error('Error updating student:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-}));
-/****Attendance table*/
-app.post('/api/attendance', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { records } = req.body;
-    console.log('Received attendance data:', req.body);
-    try {
-        const insertPromises = records.map((record) => {
-            return pool.query('INSERT INTO attendance (studentid, status, date) VALUES ($1, $2, CURRENT_DATE)', [record.studentId, record.status]);
-        });
-        yield Promise.all(insertPromises);
-        res.status(200).send('Attendance recorded');
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send('Error recording attendance');
-    }
-}));
-/****attendance count */
-app.get('/attendance/count', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const totalStudentsResult = yield pool.query('SELECT COUNT(*) FROM students');
-        const totalStudents = parseInt(totalStudentsResult.rows[0].count, 10);
-        const attendanceResult = yield pool.query(`
-        SELECT 
-          COUNT(CASE WHEN status = 'Present' THEN 1 END) AS present,
-          COUNT(CASE WHEN status = 'Absent' THEN 1 END) AS absent
-        FROM attendance
-        WHERE date = CURRENT_DATE
-      `);
-        const { present, absent } = attendanceResult.rows[0];
-        const percentage = totalStudents === 0 ? 0 : (present / totalStudents) * 100;
-        res.json({
-            totalStudents,
-            present,
-            absent,
-            percentage: percentage.toFixed(2),
-        });
-    }
-    catch (err) {
-        console.error('Error calculating attendance counts:', err);
-        res.status(500).send('Server error');
-    }
-}));
-/*******attendance lastest update******/
-app.get("/latest-attendance-summary", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    });
+}); });
+/***** Attendance - Record attendance *****/
+app.post('/api/attendance', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var records, insertPromises, err_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                records = req.body.records;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                insertPromises = records.map(function (record) {
+                    return pool.query('INSERT INTO attendance (studentid, status, date) VALUES ($1, $2, CURRENT_DATE)', [record.studentId, record.status]);
+                });
+                return [4 /*yield*/, Promise.all(insertPromises)];
+            case 2:
+                _a.sent();
+                res.status(200).send('Attendance recorded');
+                return [3 /*break*/, 4];
+            case 3:
+                err_3 = _a.sent();
+                console.error(err_3);
+                res.status(500).send('Error recording attendance');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+/**** Attendance count for dashboard */
+app.get('/attendance/count', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var totalStudentsResult, totalStudents, attendanceResult, _a, present, absent, percentage, err_4;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, pool.query('SELECT COUNT(*) FROM students')];
+            case 1:
+                totalStudentsResult = _b.sent();
+                totalStudents = parseInt(totalStudentsResult.rows[0].count, 10);
+                return [4 /*yield*/, pool.query("\n            SELECT \n                COUNT(CASE WHEN status = 'Present' THEN 1 END) AS present,\n                COUNT(CASE WHEN status = 'Absent' THEN 1 END) AS absent\n            FROM attendance\n            WHERE date = CURRENT_DATE\n        ")];
+            case 2:
+                attendanceResult = _b.sent();
+                _a = attendanceResult.rows[0], present = _a.present, absent = _a.absent;
+                percentage = totalStudents === 0 ? 0 : (present / totalStudents) * 100;
+                res.json({
+                    totalStudents: totalStudents,
+                    present: present,
+                    absent: absent,
+                    percentage: percentage.toFixed(2),
+                });
+                return [3 /*break*/, 4];
+            case 3:
+                err_4 = _b.sent();
+                console.error('Error calculating attendance counts:', err_4);
+                res.status(500).send('Server error');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+/******* Latest attendance summary for /latest-attendance-summary ******/
+app.get("/latest-attendance-summary", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var latestTimestampResult, latestTimestamp, summaryResult, error_8;
     var _a;
-    try {
-        // Step 1: Get the latest submission timestamp
-        const latestTimestampResult = yield pool.query(`
-        SELECT attendance_date 
-        FROM attendance 
-        ORDER BY attendance_date DESC 
-        LIMIT 1
-      `);
-        const latestTimestamp = (_a = latestTimestampResult.rows[0]) === null || _a === void 0 ? void 0 : _a.attendance_date;
-        if (!latestTimestamp) {
-            return res.status(404).json({ message: "No attendance found" });
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, pool.query("\n            SELECT attendance_date \n            FROM attendance \n            ORDER BY attendance_date DESC \n            LIMIT 1\n        ")];
+            case 1:
+                latestTimestampResult = _b.sent();
+                latestTimestamp = (_a = latestTimestampResult.rows[0]) === null || _a === void 0 ? void 0 : _a.attendance_date;
+                if (!latestTimestamp) {
+                    return [2 /*return*/, res.status(404).json({ message: "No attendance found" })];
+                }
+                return [4 /*yield*/, pool.query("SELECT status, COUNT(*) AS count\n             FROM attendance\n             WHERE attendance_date = $1\n             GROUP BY status", [latestTimestamp])];
+            case 2:
+                summaryResult = _b.sent();
+                res.json({ date: latestTimestamp, summary: summaryResult.rows });
+                return [3 /*break*/, 4];
+            case 3:
+                error_8 = _b.sent();
+                console.error("Error getting latest attendance summary:", error_8);
+                res.status(500).send("Server error");
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
-        // Step 2: Get only records matching that exact timestamp
-        const summaryResult = yield pool.query(`SELECT status, COUNT(*) AS count
-         FROM attendance
-         WHERE attendance_date = $1
-         GROUP BY status`, [latestTimestamp]);
-        res.json({ date: latestTimestamp, summary: summaryResult.rows });
-    }
-    catch (error) {
-        console.error("Error getting latest attendance summary:", error);
-        res.status(500).send("Server error");
-    }
-}));
-/******Mark Sheet********/
-app.post('/api/marks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        for (const record of req.body.records) {
-            yield pool.query(`INSERT INTO marks (student_id, tamil, english, math, science, social, average) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7)`, [record.studentId, record.tamil, record.english, record.math, record.science, record.social, record.average]);
+    });
+}); });
+/****** Mark sheet entry ******/
+app.post('/api/marks', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var _i, _a, record, err_5;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 5, , 6]);
+                _i = 0, _a = req.body.records;
+                _b.label = 1;
+            case 1:
+                if (!(_i < _a.length)) return [3 /*break*/, 4];
+                record = _a[_i];
+                return [4 /*yield*/, pool.query("INSERT INTO marks (student_id, tamil, english, math, science, social, average) \n                 VALUES ($1, $2, $3, $4, $5, $6, $7)", [record.studentId, record.tamil, record.english, record.math, record.science, record.social, record.average])];
+            case 2:
+                _b.sent();
+                _b.label = 3;
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4:
+                res.status(200).send("Marks stored successfully.");
+                return [3 /*break*/, 6];
+            case 5:
+                err_5 = _b.sent();
+                console.error("Error inserting marks:", err_5);
+                res.status(500).send("Error storing marks.");
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
-        res.status(200).send("Marks stored successfully.");
-    }
-    catch (err) {
-        console.error("Error inserting marks:", err);
-        res.status(500).send("Error storing marks.");
-    }
-}));
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    });
+}); });
+app.listen(port, function () {
+    console.log("Server is running on http://localhost:".concat(port));
 });

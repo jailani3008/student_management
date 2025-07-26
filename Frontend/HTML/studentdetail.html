@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html lang ="en">
+<html lang="en">
 <head>
-    <meta charset = "UTF-8">
-    <meta name = "viewport" content = "width=device-width,initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Page</title>
-    <link rel="stylesheet" href="/CSS/studentdetail.css">
+    <!-- Add Google Fonts for Lobster if you want the special font -->
+    <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/studentdetail.css">
 </head>
 <body>
     <div class="navbar">
         <h1 class="title">Student Management System</h1>
         <div class="nav-link">
-            <a href="/HTML/home.html" class="nav-button">Home</a>
-            <a href="/HTML/attendance.html" class="nav-button">Attendance</a>
-            <a href="/HTML/studentdetail.html" class="nav-button">Student Detail</a>
-            <a href="/HTML/adddetails.html" class="nav-button">ADD Detail</a>
-            <a href="/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
-            <a href="/HTML/logout.html" class="nav-button" id="logoutBtn">LogOut</a>
+            <a href="/Frontend/HTML/home.html" class="nav-button">Home</a>
+            <a href="/Frontend/HTML/attendance.html" class="nav-button">Attendance</a>
+            <a href="/Frontend/HTML/studentdetail.html" class="nav-button">Student Detail</a>
+            <a href="/Frontend/HTML/adddetails.html" class="nav-button">ADD Detail</a>
+            <a href="/Frontend/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
+            <a href="/Frontend/HTML/logout.html" class="nav-button" id="logoutBtn">LogOut</a>
         </div>
     </div>
     <div class="container">
@@ -31,9 +33,11 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                <!-- Student rows will be inserted here by JS -->
+            </tbody>
         </table>
     </div>
-    <script src="/JS/studentdetail.js"></script>
+    <script src="../JS/studentdetail.js"></script>
 </body>
 </html>

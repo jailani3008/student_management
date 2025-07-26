@@ -1,42 +1,48 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const accountContainer = document.getElementById('accountContainer') as HTMLElement;
-    const flipToLogin = document.getElementById('flipToLogin') as HTMLElement;
+  // Get the form element by ID
+  const form = document.getElementById('loginForm') as HTMLFormElement | null;
 
-    flipToLogin.addEventListener('click', (e: Event) => {
-        e.preventDefault();
-        accountContainer.classList.add('flipped');
-        setTimeout(() => {
-            window.location.href = "/Frontend/HTML/register.html";
-        }, 800);
-    });
+  if (!form) {
+    console.error("loginForm element not found");
+    return;
+  }
 
-    const loginForm = document.getElementById('loginForm') as HTMLFormElement;
-    loginForm.addEventListener('submit', async (e: Event) => {
-        e.preventDefault();
+  form.addEventListener('submit', async (e: Event) => {
+    e.preventDefault();
 
-        const username = (document.getElementById('username') as HTMLInputElement).value;
-        const password = (document.getElementById('password') as HTMLInputElement).value;
+    const username = (document.getElementById('username') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement).value;
 
-        try {
-            const response = await fetch('https://student-management-1-xok5.onrender.com/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+    try {
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json' // Explicitly expect JSON
+        },
+        body: JSON.stringify({ username, password })
+      });
 
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem('token', data.token); // store token
-                localStorage.setItem('isLoggedIn', 'true'); // store login status
+      // First check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(text || 'Invalid server response');
+      }
 
-                // ✅ Redirect after login
-                window.location.href = '/Frontend/HTML/studentdetail.html';
-            } else {
-                alert('Invalid credentials');
-            }
-        } catch (error) {
-            console.error('Error during login:', error);
-            alert('An error occurred during login');
-        }
-    });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('isLoggedIn', 'true');
+      window.location.href = '/Frontend/HTML/studentdetail.html';
+
+    } catch (error: any) {
+      console.error('Login error:', error);
+      alert(error.message || 'Login failed. Please try again.');
+    }
+  });
 });

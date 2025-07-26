@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Student Marksheet</title>
+  <!-- Optional: Correct the Lobster font typo for nav title -->
+  <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../CSS/marksheet.css">
 </head>
 <body>
-    <div class="navbar">
-        <h1 class="title">Student Management System</h1>
-        <div class="nav-link">
-            <a href="/HTML/home.html" class="nav-button">Home</a>
-            <a href="/HTML/attendance.html" class="nav-button">Attendance</a>
-            <a href="/HTML/studentdetail.html" class="nav-button">Student Detail</a>
-            <a href="/HTML/adddetails.html" class="nav-button">ADD Detail</a>
-            <a href="/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
-            <a href="/HTML/logout.html" class="nav-button">LogOut</a>
-        </div>
+  <div class="navbar">
+    <h1 class="title">Student Management System</h1>
+    <div class="nav-link">
+      <a href="/Frontend/HTML/home.html" class="nav-button">Home</a>
+      <a href="/Frontend/HTML/attendance.html" class="nav-button">Attendance</a>
+      <a href="/Frontend/HTML/studentdetail.html" class="nav-button">Student Detail</a>
+      <a href="/Frontend/HTML/adddetails.html" class="nav-button">ADD Detail</a>
+      <a href="/Frontend/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
+      <a href="/Frontend/HTML/logout.html" class="nav-button">LogOut</a>
     </div>
+  </div>
   <h1>Student Marksheet</h1>
   <form id="marksForm">
     <table border="1">
@@ -36,7 +38,6 @@
     <button type="submit">Submit Marks</button>
   </form>
   <h2 id="overallAverage">Overall Average: 0</h2>
-
   <script type="module" src="../JS/marksheet.js"></script>
 </body>
 </html>

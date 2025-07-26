@@ -1,70 +1,66 @@
-// import express, { Application, Request, Response, NextFunction } from 'express';
-const express = require('express')
+// If using TypeScript, use import; otherwise use require as in your original file
+const express = require('express');
 const bodyParser = require('body-parser');
-import { Client, Pool } from 'pg';
-//import editstd from './editstd';
+const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const path = require('path');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
+// PostgreSQL connection settings (adjust as needed)
 const pool = new Pool({
     user: 'postgres',
-    host: 'localhost',
+    host: 'localhost', // Localhost for local PG
     database: 'student_management',
-    password: '123456',
-    port: 5432,
+    password: '123456', // Change if needed
+    port: 5432
 });
 
-app.use(cors());
-
+// Middleware
+app.use(cors()); // Opens up for local frontend dev
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Serve frontend static files from the local frontend build directory
 app.use(express.static(path.join(__dirname, '../Frontend')));
-/*****************REGISTER****************/
+
+/***************** REGISTER ****************/
 app.post('/register', async (req: any, res: any) => {
     const { username, password } = req.body;
-    console.log('Received register request:', req.body);
-
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        console.log('Hashed Password:', hashedPassword);
         const result = await pool.query(
             'INSERT INTO users (username, password) VALUES($1, $2) RETURNING id, username',
             [username, hashedPassword]
         );
-        console.log('Result:', result.rows[0]);
         res.status(201).json({
             message: 'User registered successfully',
             user: result.rows[0]
         });
-        return;
-    } catch (err) {
-        console.log('Error:', err);
-        if (err === '23505') {
+    } catch (err: any) {
+        if (err.code === '23505') {
+            // Unique violation error code in PG
             res.status(409).send('Username already exists');
-            return ;
+        } else {
+            res.status(500).send('Error registering user');
         }
-        res.status(500).send('Error registering user');
     }
 });
-/********************LOGIN***********************/
+
+/***************** LOGIN ******************/
 app.post('/login', async (req: any, res: any) => {
     const { username, password } = req.body;
-
     try {
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         const user = result.rows[0];
-        console.log("request body", req.body);
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
-             res.status(401).send('Invalid credentials');
-             return;
+            res.status(401).send('Invalid credentials');
+            return;
         }
-
         const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
         res.json({ token });
     } catch (err) {
@@ -72,18 +68,14 @@ app.post('/login', async (req: any, res: any) => {
     }
 });
 
-
-/***********ADD STUDENT DETAIL**************/
-
+/*********** ADD STUDENT DETAIL ************/
 app.post('/api/addStudent', async (req: any, res: any) => {
     const { studentId, name, class: classValue, email } = req.body;
-    console.log("Received student data:", req.body);
-
     try {
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
-            const result = await client.query(
+            await client.query(
                 'INSERT INTO students(studentId, name, class, email) VALUES ($1, $2, $3, $4) RETURNING studentId',
                 [studentId, name, classValue, email]
             );
@@ -92,7 +84,7 @@ app.post('/api/addStudent', async (req: any, res: any) => {
         } catch (error) {
             await client.query('ROLLBACK');
             console.error('Error adding student:', error);
-            res.status(500).json({error:'Error adding student'});
+            res.status(500).json({ error: 'Error adding student' });
         } finally {
             client.release();
         }
@@ -102,7 +94,7 @@ app.post('/api/addStudent', async (req: any, res: any) => {
     }
 });
 
-/**********GET ALL STUDENT DETAIL**********/
+/********** GET ALL STUDENT DETAIL *********/
 app.get('/api/getStudents', async (req: any, res: any) => {
     try {
         const client = await pool.connect();
@@ -115,10 +107,9 @@ app.get('/api/getStudents', async (req: any, res: any) => {
     }
 });
 
-/*******DELETE STUDENT DETAIL**********/
+/******* DELETE STUDENT DETAIL ************/
 app.delete('/api/deleteStudent/:studentId', async (req: any, res: any) => {
     const studentId = req.params.studentId;
-
     try {
         const client = await pool.connect();
         await client.query('BEGIN');
@@ -136,10 +127,9 @@ app.delete('/api/deleteStudent/:studentId', async (req: any, res: any) => {
     }
 });
 
-/*************GET STUDENT DETAIL USING STUDENTID************/
+/***** GET STUDENT DETAIL USING STUDENTID *****/
 app.get('/api/getStudents/:studentId', async (req: any, res: any) => {
     const studentId = req.params.studentId;
-
     try {
         const client = await pool.connect();
         const result = await client.query('SELECT * FROM students WHERE studentId = $1', [studentId]);
@@ -155,19 +145,17 @@ app.get('/api/getStudents/:studentId', async (req: any, res: any) => {
     }
 });
 
+// Secondary student GET endpoint ("student_id" vs "studentId")
 app.get('/api/students/:studentId', async (req: any, res: any) => {
     try {
         const { studentId } = req.params;
-
         const result = await pool.query(
-            'SELECT * FROM students WHERE student_id = $1', 
+            'SELECT * FROM students WHERE student_id = $1',
             [studentId]
         );
-
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Student not found' });
         }
-
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Error fetching student:', error);
@@ -175,15 +163,11 @@ app.get('/api/students/:studentId', async (req: any, res: any) => {
     }
 });
 
-
 // Update student
 app.put('/api/students/:studentId', async (req: any, res: any) => {
     try {
         const { studentId } = req.params;
         const { name, class: className, email } = req.body;
-
-        console.log('Updating student:', studentId);
-
         const result = await pool.query(
             `UPDATE students 
              SET name = $1, class = $2, email = $3 
@@ -191,11 +175,9 @@ app.put('/api/students/:studentId', async (req: any, res: any) => {
              RETURNING *`,
             [name, className, email, studentId]
         );
-
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Student not found' });
         }
-
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Error updating student:', error);
@@ -203,110 +185,100 @@ app.put('/api/students/:studentId', async (req: any, res: any) => {
     }
 });
 
-/****Attendance table*/
-app.post('/api/attendance', async (req:any, res:any) => {
+/***** Attendance - Record attendance *****/
+app.post('/api/attendance', async (req: any, res: any) => {
     const { records } = req.body;
-    console.log('Received attendance data:', req.body);
-
-  
     try {
-      const insertPromises = records.map((record: any) => {
-        return pool.query(
-          'INSERT INTO attendance (studentid, status, date) VALUES ($1, $2, CURRENT_DATE)',
-          [record.studentId, record.status]
-        );
-      });
-  
-      await Promise.all(insertPromises);
-      res.status(200).send('Attendance recorded');
+        const insertPromises = records.map((record: any) => {
+            return pool.query(
+                'INSERT INTO attendance (studentid, status, date) VALUES ($1, $2, CURRENT_DATE)',
+                [record.studentId, record.status]
+            );
+        });
+        await Promise.all(insertPromises);
+        res.status(200).send('Attendance recorded');
     } catch (err) {
-      console.error(err);
-      res.status(500).send('Error recording attendance');
+        console.error(err);
+        res.status(500).send('Error recording attendance');
     }
-  });
-/****attendance count */
+});
+
+/**** Attendance count for dashboard */
 app.get('/attendance/count', async (req: any, res: any) => {
     try {
-      const totalStudentsResult = await pool.query('SELECT COUNT(*) FROM students');
-      const totalStudents = parseInt(totalStudentsResult.rows[0].count, 10);
-  
-      const attendanceResult = await pool.query(`
-        SELECT 
-          COUNT(CASE WHEN status = 'Present' THEN 1 END) AS present,
-          COUNT(CASE WHEN status = 'Absent' THEN 1 END) AS absent
-        FROM attendance
-        WHERE date = CURRENT_DATE
-      `);
-  
-      const { present, absent } = attendanceResult.rows[0];
-  
-      const percentage = totalStudents === 0 ? 0 : (present / totalStudents) * 100;
-  
-      res.json({
-        totalStudents,
-        present,
-        absent,
-        percentage: percentage.toFixed(2),
-      });
+        const totalStudentsResult = await pool.query('SELECT COUNT(*) FROM students');
+        const totalStudents = parseInt(totalStudentsResult.rows[0].count, 10);
+
+        const attendanceResult = await pool.query(`
+            SELECT 
+                COUNT(CASE WHEN status = 'Present' THEN 1 END) AS present,
+                COUNT(CASE WHEN status = 'Absent' THEN 1 END) AS absent
+            FROM attendance
+            WHERE date = CURRENT_DATE
+        `);
+        const { present, absent } = attendanceResult.rows[0];
+        const percentage = totalStudents === 0 ? 0 : (present / totalStudents) * 100;
+
+        res.json({
+            totalStudents,
+            present,
+            absent,
+            percentage: percentage.toFixed(2),
+        });
     } catch (err) {
-      console.error('Error calculating attendance counts:', err);
-      res.status(500).send('Server error');
+        console.error('Error calculating attendance counts:', err);
+        res.status(500).send('Server error');
     }
-  });
+});
 
-/*******attendance lastest update******/
-
+/******* Latest attendance summary for /latest-attendance-summary ******/
 app.get("/latest-attendance-summary", async (req: any, res: any) => {
     try {
-      // Step 1: Get the latest submission timestamp
-      const latestTimestampResult = await pool.query(`
-        SELECT attendance_date 
-        FROM attendance 
-        ORDER BY attendance_date DESC 
-        LIMIT 1
-      `);
-      const latestTimestamp = latestTimestampResult.rows[0]?.attendance_date;
-  
-      if (!latestTimestamp) {
-        return res.status(404).json({ message: "No attendance found" });
-      }
-  
-      // Step 2: Get only records matching that exact timestamp
-      const summaryResult = await pool.query(
-        `SELECT status, COUNT(*) AS count
-         FROM attendance
-         WHERE attendance_date = $1
-         GROUP BY status`,
-        [latestTimestamp]
-      );
-  
-      res.json({ date: latestTimestamp, summary: summaryResult.rows });
-    } catch (error) {
-      console.error("Error getting latest attendance summary:", error);
-      res.status(500).send("Server error");
-    }
-  });
-  
-  /******Mark Sheet********/
-  app.post('/api/marks', async (req:any, res:any) => {
-    try {
-      for (const record of req.body.records) {
-        await pool.query(
-          `INSERT INTO marks (student_id, tamil, english, math, science, social, average) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [record.studentId, record.tamil, record.english, record.math, record.science, record.social, record.average]
-        );
-      }
-      res.status(200).send("Marks stored successfully.");
-    } catch (err) {
-      console.error("Error inserting marks:", err);
-      res.status(500).send("Error storing marks.");
-    }
-  });
-    
+        // Step 1: Get the latest submission timestamp
+        const latestTimestampResult = await pool.query(`
+            SELECT attendance_date 
+            FROM attendance 
+            ORDER BY attendance_date DESC 
+            LIMIT 1
+        `);
+        const latestTimestamp = latestTimestampResult.rows[0]?.attendance_date;
 
-    
-  
+        if (!latestTimestamp) {
+            return res.status(404).json({ message: "No attendance found" });
+        }
+
+        // Step 2: Get records matching that exact timestamp
+        const summaryResult = await pool.query(
+            `SELECT status, COUNT(*) AS count
+             FROM attendance
+             WHERE attendance_date = $1
+             GROUP BY status`,
+            [latestTimestamp]
+        );
+
+        res.json({ date: latestTimestamp, summary: summaryResult.rows });
+    } catch (error) {
+        console.error("Error getting latest attendance summary:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+/****** Mark sheet entry ******/
+app.post('/api/marks', async (req: any, res: any) => {
+    try {
+        for (const record of req.body.records) {
+            await pool.query(
+                `INSERT INTO marks (student_id, tamil, english, math, science, social, average) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                [record.studentId, record.tamil, record.english, record.math, record.science, record.social, record.average]
+            );
+        }
+        res.status(200).send("Marks stored successfully.");
+    } catch (err) {
+        console.error("Error inserting marks:", err);
+        res.status(500).send("Error storing marks.");
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

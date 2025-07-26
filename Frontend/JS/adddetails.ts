@@ -1,73 +1,61 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const studentIdParam = urlParams.get('studentId');
-  
-    const form = document.getElementById('studentForm') as HTMLFormElement;
-    const studentIdInput = document.getElementById('studentId') as HTMLInputElement;
-    const nameInput = document.getElementById('name') as HTMLInputElement;
-    const classInput = document.getElementById('class') as HTMLInputElement;
-    const emailInput = document.getElementById('email') as HTMLInputElement;
+  const urlParams = new URLSearchParams(window.location.search);
+  const studentIdParam = urlParams.get('studentId');
 
-  
-    // If editing, fetch and fill student details
-    if (studentIdParam) {
-      try {
-        const response = await fetch(`https://student-management-1-xok5.onrender.com/api/getStudents/${studentIdParam}`);
-        if (response.ok) {
-          const student = await response.json();
-  
-          studentIdInput.value = student.studentid;
-          nameInput.value = student.name;
-          classInput.value = student.class;
-          emailInput.value = student.email;
-  
-          studentIdInput.disabled = true; // Make student ID read-only
-        } else {
-          alert('Student not found');
-        }
-      } catch (error) {
-        console.error('Error fetching student details:', error);
-        alert('Error loading student data');
+  const form = document.getElementById('studentForm') as HTMLFormElement | null;
+  const studentIdInput = document.getElementById('studentId') as HTMLInputElement | null;
+  const nameInput = document.getElementById('name') as HTMLInputElement | null;
+  const classInput = document.getElementById('class') as HTMLInputElement | null;
+  const emailInput = document.getElementById('email') as HTMLInputElement | null;
+
+  if (!form || !studentIdInput || !nameInput || !classInput || !emailInput) return;
+
+  if (studentIdParam) {
+    try {
+      const response = await fetch(`http://localhost:3000/api/getStudents/${studentIdParam}`);
+      if (response.ok) {
+        const student = await response.json();
+        studentIdInput.value = student.studentid;
+        nameInput.value = student.name;
+        classInput.value = student.class;
+        emailInput.value = student.email;
+        studentIdInput.disabled = true;
+      } else {
+        alert('Student not found');
       }
+    } catch (error) {
+      alert('Error loading student data');
     }
-  
-    // Submit form
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-  
-      const data = {
-        studentId: studentIdInput.value,
-        name: nameInput.value,
-        class: classInput.value,
-        email: emailInput.value
-      };
-  
-      const apiUrl = studentIdParam
-        ? `https://student-management-1-xok5.onrender.com/api/students/${studentIdParam}` // PUT
-        : 'https://student-management-1-xok5.onrender.com/api/addStudent';                // POST
-  
-      const method = studentIdParam ? 'PUT' : 'POST';
-  
-      try {
-        const response = await fetch(apiUrl, {
-          method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-  
-        if (response.ok) {
-          alert(`Student ${studentIdParam ? 'updated' : 'added'} successfully`);
-  
-          // ✅ Redirect after success
-          window.location.href = '/Frontend/HTML/studentdetail.html';
-        } else {
-          const errorText = await response.text();
-          alert(`Failed to ${studentIdParam ? 'update' : 'add'} student:\n${errorText}`);
-        }
-      } catch (error) {
-        console.error(`${method} Error:`, error);
-        alert(`Error ${studentIdParam ? 'updating' : 'adding'} student`);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      studentId: studentIdInput.value,
+      name: nameInput.value,
+      class: classInput.value,
+      email: emailInput.value
+    };
+    const apiUrl = studentIdParam
+      ? `http://localhost:3000/api/students/${studentIdParam}`
+      : 'http://localhost:3000/api/addStudent';
+    const method = studentIdParam ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (response.ok) {
+        alert(`Student ${studentIdParam ? 'updated' : 'added'} successfully`);
+        window.location.href = 'studentdetail.html';
+      } else {
+        const errorText = await response.text();
+        alert(`Failed to ${studentIdParam ? 'update' : 'add'} student:\n${errorText}`);
       }
-    });
+    } catch {
+      alert(`Error ${studentIdParam ? 'updating' : 'adding'} student`);
+    }
   });
-  
+});
