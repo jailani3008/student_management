@@ -1,5 +1,8 @@
+import { API_BASE_URL } from '../config';
+
 document.addEventListener('DOMContentLoaded', () => {
   // Get the form element by ID
+  
   const form = document.getElementById('loginForm') as HTMLFormElement | null;
 
   if (!form) {
@@ -14,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = (document.getElementById('password') as HTMLInputElement).value;
 
     try {
-      const response = await fetch('http://localhost:3000/login', {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,20 +35,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = require("../config");
 if (!localStorage.getItem("isLoggedIn")) {
     window.location.href = "/HTML/login.html";
 }
-document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
+document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
     var tbody, form, overallAverageEl, res, students;
-    var _this = this;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 tbody = document.getElementById('marksTableBody');
                 form = document.getElementById('marksForm');
                 overallAverageEl = document.getElementById('overallAverage');
-                return [4 /*yield*/, fetch('http://localhost:3000/api/getStudents')];
+                return [4 /*yield*/, fetch("".concat(config_1.API_BASE_URL, "/api/getStudents"))];
             case 1:
                 res = _a.sent();
                 return [4 /*yield*/, res.json()];
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                     row.setAttribute('data-id', student.studentid);
                     tbody.appendChild(row);
                 });
-                form.addEventListener('submit', function (e) { return __awaiter(_this, void 0, void 0, function () {
+                form.addEventListener('submit', function (e) { return __awaiter(void 0, void 0, void 0, function () {
                     var rows, marksData, totalAverage, _loop_1, _i, rows_1, row, response;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     row = rows_1[_i];
                                     _loop_1(row);
                                 }
-                                return [4 /*yield*/, fetch('http://localhost:3000/api/marks', {
+                                return [4 /*yield*/, fetch("".concat(config_1.API_BASE_URL, "/api/marks"), {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({ records: marksData }),

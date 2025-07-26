@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 if (!localStorage.getItem("isLoggedIn")) {
   window.location.href = "/HTML/login.html";
 }
@@ -15,7 +17,7 @@ interface AttendanceSummaryResponse {
 async function fetchLatestAttendanceSummary(): Promise<void> {
   try {
     // Changed ONLY this line to use local backend
-    const response = await fetch("http://localhost:3000/latest-attendance-summary");
+    const response = await fetch(`${API_BASE_URL}/latest-attendance-summary`);
     const data: AttendanceSummaryResponse = await response.json();
 
     let total = 0;

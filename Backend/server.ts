@@ -17,7 +17,11 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://sm-frontend-eight.vercel.app',
+  credentials: true,
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

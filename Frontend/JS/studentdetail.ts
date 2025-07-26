@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 if (!localStorage.getItem("isLoggedIn")) {
   window.location.replace("/HTML/login.html");
 }
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const handleDeleteStudent = async (studentId: string): Promise<void> => {
     if (confirm('Are you sure you want to delete this student?')) {
       try {
-        const response = await fetch(`http://localhost:3000/api/deleteStudent/${studentId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/deleteStudent/${studentId}`, {
           method: 'DELETE'
         });
 
@@ -67,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const fetchStudents = async (): Promise<void> => {
     try {
-      const response = await fetch('http://localhost:3000/api/getStudents');
+      const response = await fetch(`${API_BASE_URL}/api/getStudents`);
       if (response.ok) {
         const students = await response.json();
         renderStudents(students);

@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 if (!localStorage.getItem("isLoggedIn")) {
   window.location.replace("/HTML/login.html");
 }
@@ -6,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tbody = document.getElementById('attendanceTableBody')!;
 
   try {
-    const response = await fetch('http://localhost:3000/api/getStudents');
+    const response = await fetch(`${API_BASE_URL}/api/getStudents`);
     const students = await response.json();
 
     students.forEach((student: any, index: number) => {
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     try {
-      const response = await fetch('http://localhost:3000/api/attendance', {
+      const response = await fetch(`${API_BASE_URL}/api/attendance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

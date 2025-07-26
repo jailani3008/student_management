@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 document.addEventListener('DOMContentLoaded', () => {
     const accountContainer = document.getElementById('accountContainer') as HTMLElement;
     const flipToLogin = document.getElementById('flipToLogin') as HTMLElement;
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Changed URL to local
-            const response = await fetch('http://localhost:3000/register', {
+            const response = await fetch(`${API_BASE_URL}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })

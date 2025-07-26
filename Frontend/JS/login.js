@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,7 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = require("../config");
 document.addEventListener('DOMContentLoaded', function () {
     // Get the form element by ID
     var form = document.getElementById('loginForm');
@@ -42,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error("loginForm element not found");
         return;
     }
-    form.addEventListener('submit', function (e) { return __awaiter(_this, void 0, void 0, function () {
+    form.addEventListener('submit', function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var username, password, response, contentType, text, data, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -53,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/login', {
+                    return [4 /*yield*/, fetch("".concat(config_1.API_BASE_URL, "/login"), {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

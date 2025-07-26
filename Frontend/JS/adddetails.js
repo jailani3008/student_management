@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -34,10 +35,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
-document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = require("../config");
+document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
     var urlParams, studentIdParam, form, studentIdInput, nameInput, classInput, emailInput, response, student, error_1;
-    var _this = this;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 6, , 7]);
-                return [4 /*yield*/, fetch("http://localhost:3000/api/getStudents/".concat(studentIdParam))];
+                return [4 /*yield*/, fetch("".concat(config_1.API_BASE_URL, "/api/getStudents/").concat(studentIdParam))];
             case 2:
                 response = _a.sent();
                 if (!response.ok) return [3 /*break*/, 4];
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 alert('Error loading student data');
                 return [3 /*break*/, 7];
             case 7:
-                form.addEventListener('submit', function (e) { return __awaiter(_this, void 0, void 0, function () {
+                form.addEventListener('submit', function (e) { return __awaiter(void 0, void 0, void 0, function () {
                     var data, apiUrl, method, response, errorText, _a;
                     return __generator(this, function (_b) {
                         switch (_b.label) {
@@ -89,8 +90,8 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     email: emailInput.value
                                 };
                                 apiUrl = studentIdParam
-                                    ? "http://localhost:3000/api/students/".concat(studentIdParam)
-                                    : 'http://localhost:3000/api/addStudent';
+                                    ? "".concat(config_1.API_BASE_URL, "/api/students/").concat(studentIdParam)
+                                    : "".concat(config_1.API_BASE_URL, "/api/addStudent");
                                 method = studentIdParam ? 'PUT' : 'POST';
                                 _b.label = 1;
                             case 1:

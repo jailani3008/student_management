@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 if (!localStorage.getItem("isLoggedIn")) {
   window.location.href = "/HTML/login.html";
 }
@@ -19,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   // FETCH from local backend!
-  const res = await fetch('http://localhost:3000/api/getStudents');
+  const res = await fetch(`${API_BASE_URL}/api/getStudents`);
   const students = await res.json();
 
   students.forEach((student: any) => {
@@ -67,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // POST to local backend!
-    const response = await fetch('http://localhost:3000/api/marks', {
+    const response = await fetch(`${API_BASE_URL}/api/marks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ records: marksData }),

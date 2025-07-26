@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const studentIdParam = urlParams.get('studentId');
@@ -12,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (studentIdParam) {
     try {
-      const response = await fetch(`http://localhost:3000/api/getStudents/${studentIdParam}`);
+      const response = await fetch(`${API_BASE_URL}/api/getStudents/${studentIdParam}`);
       if (response.ok) {
         const student = await response.json();
         studentIdInput.value = student.studentid;
@@ -37,8 +39,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       email: emailInput.value
     };
     const apiUrl = studentIdParam
-      ? `http://localhost:3000/api/students/${studentIdParam}`
-      : 'http://localhost:3000/api/addStudent';
+      ? `${API_BASE_URL}/api/students/${studentIdParam}`
+      : `${API_BASE_URL}/api/addStudent`;
     const method = studentIdParam ? 'PUT' : 'POST';
 
     try {

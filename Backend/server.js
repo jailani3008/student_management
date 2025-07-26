@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
-// If using TypeScript, use import; otherwise use require as in your original file
+require('dotenv').config();
 var express = require('express');
 var bodyParser = require('body-parser');
 var Pool = require('pg').Pool;
@@ -45,19 +45,19 @@ var cors = require('cors');
 var path = require('path');
 var app = express();
 var port = process.env.PORT || 3000;
-// PostgreSQL connection settings (adjust as needed)
+var jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
+// Pool configured with Neon connection string and SSL for Neon
 var pool = new Pool({
-    user: 'postgres',
-    host: 'localhost', // Localhost for local PG
-    database: 'student_management',
-    password: '123456', // Change if needed
-    port: 5432
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
 });
-// Middleware
-app.use(cors()); // Opens up for local frontend dev
+app.use(cors({
+    origin: 'https://sm-frontend-eight.vercel.app',
+    credentials: true,
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// Serve frontend static files from the local frontend build directory
+// Serve frontend static files (adjust the path according to your project structure)
 app.use(express.static(path.join(__dirname, '../Frontend')));
 /***************** REGISTER ****************/
 app.post('/register', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
@@ -77,16 +77,16 @@ app.post('/register', function (req, res) { return __awaiter(_this, void 0, void
                 result = _b.sent();
                 res.status(201).json({
                     message: 'User registered successfully',
-                    user: result.rows[0]
+                    user: result.rows[0],
                 });
                 return [3 /*break*/, 5];
             case 4:
                 err_1 = _b.sent();
                 if (err_1.code === '23505') {
-                    // Unique violation error code in PG
                     res.status(409).send('Username already exists');
                 }
                 else {
+                    console.error('Register error:', err_1);
                     res.status(500).send('Error registering user');
                 }
                 return [3 /*break*/, 5];
@@ -119,11 +119,12 @@ app.post('/login', function (req, res) { return __awaiter(_this, void 0, void 0,
                     res.status(401).send('Invalid credentials');
                     return [2 /*return*/];
                 }
-                token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+                token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '1h' });
                 res.json({ token: token });
                 return [3 /*break*/, 6];
             case 5:
                 err_2 = _c.sent();
+                console.error('Login error:', err_2);
                 res.status(500).send('Error logging in');
                 return [3 /*break*/, 6];
             case 6: return [2 /*return*/];
@@ -149,7 +150,7 @@ app.post('/api/addStudent', function (req, res) { return __awaiter(_this, void 0
                 return [4 /*yield*/, client.query('BEGIN')];
             case 4:
                 _b.sent();
-                return [4 /*yield*/, client.query('INSERT INTO students(studentId, name, class, email) VALUES ($1, $2, $3, $4) RETURNING studentId', [studentId, name, classValue, email])];
+                return [4 /*yield*/, client.query('INSERT INTO students(studentid, name, class, email) VALUES ($1, $2, $3, $4) RETURNING studentid', [studentId, name, classValue, email])];
             case 5:
                 _b.sent();
                 return [4 /*yield*/, client.query('COMMIT')];
@@ -219,7 +220,7 @@ app.delete('/api/deleteStudent/:studentId', function (req, res) { return __await
                 return [4 /*yield*/, client.query('BEGIN')];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, client.query('DELETE FROM students WHERE studentId = $1 RETURNING studentId', [studentId])];
+                return [4 /*yield*/, client.query('DELETE FROM students WHERE studentid = $1 RETURNING studentid', [studentId])];
             case 4:
                 result = _a.sent();
                 return [4 /*yield*/, client.query('COMMIT')];
@@ -255,7 +256,7 @@ app.get('/api/getStudents/:studentId', function (req, res) { return __awaiter(_t
                 return [4 /*yield*/, pool.connect()];
             case 2:
                 client = _a.sent();
-                return [4 /*yield*/, client.query('SELECT * FROM students WHERE studentId = $1', [studentId])];
+                return [4 /*yield*/, client.query('SELECT * FROM students WHERE studentid = $1', [studentId])];
             case 3:
                 result = _a.sent();
                 client.release();
@@ -275,54 +276,31 @@ app.get('/api/getStudents/:studentId', function (req, res) { return __awaiter(_t
         }
     });
 }); });
-// Secondary student GET endpoint ("student_id" vs "studentId")
-app.get('/api/students/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var studentId, result, error_6;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                studentId = req.params.studentId;
-                return [4 /*yield*/, pool.query('SELECT * FROM students WHERE student_id = $1', [studentId])];
-            case 1:
-                result = _a.sent();
-                if (result.rows.length === 0) {
-                    return [2 /*return*/, res.status(404).json({ message: 'Student not found' })];
-                }
-                res.json(result.rows[0]);
-                return [3 /*break*/, 3];
-            case 2:
-                error_6 = _a.sent();
-                console.error('Error fetching student:', error_6);
-                res.status(500).json({ message: 'Server error' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); });
 // Update student
 app.put('/api/students/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var studentId, _a, name_1, className, email, result, error_7;
+    var studentId, _a, name, className, email, result, error_6;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _b.trys.push([0, 2, , 3]);
                 studentId = req.params.studentId;
-                _a = req.body, name_1 = _a.name, className = _a.class, email = _a.email;
-                return [4 /*yield*/, pool.query("UPDATE students \n             SET name = $1, class = $2, email = $3 \n             WHERE \"studentid\" = $4 \n             RETURNING *", [name_1, className, email, studentId])];
+                _a = req.body, name = _a.name, className = _a.class, email = _a.email;
+                _b.label = 1;
             case 1:
+                _b.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, pool.query("UPDATE students \n       SET name = $1, class = $2, email = $3 \n       WHERE studentid = $4 \n       RETURNING *", [name, className, email, studentId])];
+            case 2:
                 result = _b.sent();
                 if (result.rows.length === 0) {
                     return [2 /*return*/, res.status(404).json({ message: 'Student not found' })];
                 }
                 res.json(result.rows[0]);
-                return [3 /*break*/, 3];
-            case 2:
-                error_7 = _b.sent();
-                console.error('Error updating student:', error_7);
+                return [3 /*break*/, 4];
+            case 3:
+                error_6 = _b.sent();
+                console.error('Error updating student:', error_6);
                 res.status(500).json({ message: 'Server error' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
@@ -337,7 +315,7 @@ app.post('/api/attendance', function (req, res) { return __awaiter(_this, void 0
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 insertPromises = records.map(function (record) {
-                    return pool.query('INSERT INTO attendance (studentid, status, date) VALUES ($1, $2, CURRENT_DATE)', [record.studentId, record.status]);
+                    return pool.query('INSERT INTO attendance (studentid, status, attendance_date) VALUES ($1, $2, CURRENT_DATE)', [record.studentId, record.status]);
                 });
                 return [4 /*yield*/, Promise.all(insertPromises)];
             case 2:
@@ -364,7 +342,7 @@ app.get('/attendance/count', function (req, res) { return __awaiter(_this, void 
             case 1:
                 totalStudentsResult = _b.sent();
                 totalStudents = parseInt(totalStudentsResult.rows[0].count, 10);
-                return [4 /*yield*/, pool.query("\n            SELECT \n                COUNT(CASE WHEN status = 'Present' THEN 1 END) AS present,\n                COUNT(CASE WHEN status = 'Absent' THEN 1 END) AS absent\n            FROM attendance\n            WHERE date = CURRENT_DATE\n        ")];
+                return [4 /*yield*/, pool.query("\n      SELECT \n          COUNT(CASE WHEN status = 'Present' THEN 1 END) AS present,\n          COUNT(CASE WHEN status = 'Absent' THEN 1 END) AS absent\n      FROM attendance\n      WHERE attendance_date = CURRENT_DATE\n    ")];
             case 2:
                 attendanceResult = _b.sent();
                 _a = attendanceResult.rows[0], present = _a.present, absent = _a.absent;
@@ -385,29 +363,29 @@ app.get('/attendance/count', function (req, res) { return __awaiter(_this, void 
         }
     });
 }); });
-/******* Latest attendance summary for /latest-attendance-summary ******/
+/******* Latest attendance summary ******/
 app.get("/latest-attendance-summary", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var latestTimestampResult, latestTimestamp, summaryResult, error_8;
+    var latestTimestampResult, latestTimestamp, summaryResult, error_7;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 3, , 4]);
-                return [4 /*yield*/, pool.query("\n            SELECT attendance_date \n            FROM attendance \n            ORDER BY attendance_date DESC \n            LIMIT 1\n        ")];
+                return [4 /*yield*/, pool.query("\n      SELECT attendance_date \n      FROM attendance \n      ORDER BY attendance_date DESC \n      LIMIT 1\n    ")];
             case 1:
                 latestTimestampResult = _b.sent();
                 latestTimestamp = (_a = latestTimestampResult.rows[0]) === null || _a === void 0 ? void 0 : _a.attendance_date;
                 if (!latestTimestamp) {
                     return [2 /*return*/, res.status(404).json({ message: "No attendance found" })];
                 }
-                return [4 /*yield*/, pool.query("SELECT status, COUNT(*) AS count\n             FROM attendance\n             WHERE attendance_date = $1\n             GROUP BY status", [latestTimestamp])];
+                return [4 /*yield*/, pool.query("SELECT status, COUNT(*) AS count\n       FROM attendance\n       WHERE attendance_date = $1\n       GROUP BY status", [latestTimestamp])];
             case 2:
                 summaryResult = _b.sent();
                 res.json({ date: latestTimestamp, summary: summaryResult.rows });
                 return [3 /*break*/, 4];
             case 3:
-                error_8 = _b.sent();
-                console.error("Error getting latest attendance summary:", error_8);
+                error_7 = _b.sent();
+                console.error("Error getting latest attendance summary:", error_7);
                 res.status(500).send("Server error");
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
@@ -426,7 +404,7 @@ app.post('/api/marks', function (req, res) { return __awaiter(_this, void 0, voi
             case 1:
                 if (!(_i < _a.length)) return [3 /*break*/, 4];
                 record = _a[_i];
-                return [4 /*yield*/, pool.query("INSERT INTO marks (student_id, tamil, english, math, science, social, average) \n                 VALUES ($1, $2, $3, $4, $5, $6, $7)", [record.studentId, record.tamil, record.english, record.math, record.science, record.social, record.average])];
+                return [4 /*yield*/, pool.query("INSERT INTO marks (student_id, tamil, english, math, science, social, average) \n         VALUES ($1, $2, $3, $4, $5, $6, $7)", [record.studentId, record.tamil, record.english, record.math, record.science, record.social, record.average])];
             case 2:
                 _b.sent();
                 _b.label = 3;
