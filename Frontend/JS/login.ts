@@ -1,4 +1,3 @@
-import { API_BASE_URL } from '../config';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Get the form element by ID

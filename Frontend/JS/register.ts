@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '../config';
+
 document.addEventListener('DOMContentLoaded', () => {
     const accountContainer = document.getElementById('accountContainer') as HTMLElement;
     const flipToLogin = document.getElementById('flipToLogin') as HTMLElement;

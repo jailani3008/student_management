@@ -1,4 +1,3 @@
-import { API_BASE_URL } from '../config';
 
 if (!localStorage.getItem("isLoggedIn")) {
   window.location.replace("/HTML/login.html");

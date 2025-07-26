@@ -1,8 +1,8 @@
-import { API_BASE_URL } from '../config';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const studentIdParam = urlParams.get('studentId');
+  
 
   const form = document.getElementById('studentForm') as HTMLFormElement | null;
   const studentIdInput = document.getElementById('studentId') as HTMLInputElement | null;

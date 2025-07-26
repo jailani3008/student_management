@@ -10,7 +10,8 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.14.1"
+    "pg": "^8.14.1",
+    "undici": "^7.12.0"
   },
   "scripts": {
     "dev": "tsx Backend/server.ts",
@@ -27,11 +28,14 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.15.18",
-    "@types/pg": "^8.11.11",
+    "@types/node": "^18.19.120",
+    "@types/pg": "^8.15.4",
     "cors": "^2.8.5",
+    "pg-protocol": "^1.10.3",
+    "pg-types": "^4.0.2",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "undici-types": "^7.12.0"
   },
   "description": ""
 }

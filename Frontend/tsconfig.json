@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "none",
+    "outDir": "./JS",       // Output JS in the JS folder, or adjust as you want
+    "allowJs": true,
+    "lib": ["dom", "es6"],
+    "strict": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}
