@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('isLoggedIn', 'true');
-                    window.location.href = '/Frontend/HTML/studentdetail.html';
+                    window.location.href = '/HTML/studentdetail.html';
                     return [3 /*break*/, 7];
                 case 6:
                     error_1 = _a.sent();

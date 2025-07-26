@@ -8,5 +8,5 @@ localStorage.clear();
 
 // Redirect to login page after short delay
 setTimeout(() => {
-  window.location.replace("/Frontend/HTML/login.html");
+  window.location.replace("/HTML/login.html");
 }, 100);

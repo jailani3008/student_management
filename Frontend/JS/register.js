@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         accountContainer.classList.add('flipped');
         setTimeout(function () {
-            window.location.href = "/Frontend/HTML/login.html";
+            window.location.href = "/HTML/login.html";
         }, 800);
     });
     var registerForm = document.getElementById('registerForm');
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     response = _a.sent();
                     if (!response.ok) return [3 /*break*/, 3];
                     alert('User registered successfully');
-                    window.location.href = "/Frontend/HTML/login.html";
+                    window.location.href = "/HTML/login.html";
                     return [3 /*break*/, 5];
                 case 3: return [4 /*yield*/, response.text()];
                 case 4:

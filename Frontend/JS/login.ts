@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('isLoggedIn', 'true');
-      window.location.href = '/Frontend/HTML/studentdetail.html';
+      window.location.href = '/HTML/studentdetail.html';
 
     } catch (error: any) {
       console.error('Login error:', error);
