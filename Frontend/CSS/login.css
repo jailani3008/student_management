@@ -1,60 +1,50 @@
+/* Reset styling */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
 }
 
 body {
-  background: linear-gradient(135deg, rgb(144, 169, 183) 0%, #7bac85 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, rgb(144, 169, 183), #7bac85);
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .account-container {
-  position: relative;
-  width: 400px;
-  height: auto;
-  transition: transform 0.9s;
-  transform-style: preserve-3d;
-}
-
-.account-container.flipped {
-  transform: rotateY(180deg) scale(0.95);
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  padding: 40px;
 }
 
 .login-container {
-  backface-visibility: hidden;
-  transform: rotateY(0deg);
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  padding: 40px;
-  width: 100%;
-  max-width: 400px;
-  position: relative;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.login-headers {
+.headers h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 2.2rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.headers p {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.8);
   text-align: center;
   margin-bottom: 30px;
-}
-
-.login-headers h1 {
-  color: white;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.login-headers p {
-  margin-top: 12px;
-  color: rgba(255,255,255,0.8);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 .form-group {
@@ -62,84 +52,100 @@ body {
 }
 
 .form-group label {
-  color: rgba(255,255,255,0.9);
-  display: block;
-  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  display: block;
+  margin-bottom: 6px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 
 .form-group input {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
   width: 100%;
   padding: 12px;
-  border: 1px solid #f7eeee;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.form-group input:focus {
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 1rem;
   outline: none;
-  border-color: #4285f4;
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255,255,255,0.5);
+  transition: border-color 0.3s ease;
 }
 
 .form-group input::placeholder {
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.6);
+}
+
+.form-group input:focus {
+  border-color: #4A90E2;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .submit {
   width: 100%;
-  padding: 12px;
-  background-color: #4285f4;
+  background-color: #4A90E2;
   color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 15px;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  letter-spacing: 0.05em;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .submit:hover {
-  background-color: #c0cbe4;
+  background-color: #3F7CC8;
+  box-shadow: 0 0 8px #3F7CC8;
 }
 
 .forgot-password {
-  color: rgba(255,255,255,0.7) !important;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .forgot-password a {
-  color: #e7edf7;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
   text-decoration: none;
-  font-size: 14px;
+  transition: color 0.3s ease;
 }
 
 .forgot-password a:hover {
-  color: #4285f4;
+  color: #ADD8E6;
   text-decoration: underline;
 }
 
 .signup-link {
-  font-weight: bold;
+  margin-top: 28px;
   text-align: center;
-  margin-top: 30px;
-  font-size: 14px;
-  color: #666;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .signup-link a {
+  color: #ADD8E6;
+  font-weight: 600;
   text-decoration: none;
-  color: rgb(247, 240, 240);
-  font-weight: bold;
+  cursor: pointer;
 }
 
 .signup-link a:hover {
-  color: #4285f4;
   text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .account-container {
+    padding: 30px 20px;
+    max-width: 320px;
+  }
+
+  .headers h1 {
+    font-size: 1.8rem;
+  }
+
+  .submit {
+    font-size: 1rem;
+    padding: 12px;
+  }
 }

@@ -1,38 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Student Management</title>
-  <link rel="stylesheet" href="../CSS/login.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Student Management</title>
+
+  <!-- Link login page CSS -->
+  <link rel="stylesheet" href="../CSS/login.css" />
 </head>
 <body>
   <div class="account-container" id="accountContainer">
     <div class="login-container">
-      <div class="login-headers">
+      <div class="headers">
         <h1>Welcome Back</h1>
-        <p>Enter your login Id</p>
+        <p>Enter your login ID</p>
       </div>
-      <form id="loginForm">
+
+      <form id="loginForm" novalidate>
         <div class="form-group">
           <label for="username">Username or Email</label>
-          <input type="text" id="username" name="username" required>
+          <input type="text" id="username" name="username" placeholder="Enter username or email" required />
         </div>
+
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" required>
+          <input type="password" id="password" name="password" placeholder="Enter password" required />
         </div>
+
         <button type="submit" class="submit">Login</button>
+
         <div class="forgot-password">
           <a href="/forgot-password">Forgot password?</a>
         </div>
+
         <div class="signup-link">
-          Don't have an account? <a href="/HTML/register.html" id="flipToLogin">Register</a>
+          Don't have an account? <a href="/HTML/register.html" id="flipToRegister">Register</a>
         </div>
       </form>
     </div>
   </div>
+
+  <!-- Load config to set API base URL -->
   <script src="../JS/config.js"></script>
+  <!-- Login logic -->
   <script src="../JS/login.js"></script>
 </body>
 </html>

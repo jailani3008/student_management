@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 body {
@@ -16,6 +16,7 @@ body {
 .account-container {
   position: relative;
   width: 400px;
+  max-width: 98vw;
   height: auto;
   transition: transform 0.9s;
   transform-style: preserve-3d;
@@ -33,9 +34,8 @@ body {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  padding: 40px;
+  padding: 40px 20px;
   width: 100%;
-  max-width: 400px;
   position: relative;
   overflow: hidden;
 }
@@ -83,18 +83,19 @@ body {
 }
 
 .form-group input {
+  width: 100%;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  width: 100%;
   padding: 12px;
   border-radius: 4px;
   font-size: 16px;
   border: 1px solid #f7eeee;
+  outline: none;
+  transition: border-color 0.3s ease;
 }
 
 .form-group input:focus {
-  outline: none;
   border-color: #4285f4;
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255,255,255,0.5);
@@ -104,21 +105,12 @@ body {
   color: rgba(255,255,255,0.5);
 }
 
-.form-group small {
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
 .password-hint {
   display: block;
   margin-top: 5px;
   font-size: 12px;
-}
-
-.password-match {
-  margin-top: 5px;
-  font-size: 12px;
-  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .submit {
@@ -155,4 +147,12 @@ body {
 .login-link a:hover {
   color: #4285f4;
   text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .account-container {
+    width: 90vw;
+    padding: 10px;
+  }
 }

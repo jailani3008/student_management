@@ -2,7 +2,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const studentIdParam = urlParams.get('studentId');
-  
 
   const form = document.getElementById('studentForm') as HTMLFormElement | null;
   const studentIdInput = document.getElementById('studentId') as HTMLInputElement | null;
@@ -10,45 +9,55 @@ document.addEventListener('DOMContentLoaded', async () => {
   const classInput = document.getElementById('class') as HTMLInputElement | null;
   const emailInput = document.getElementById('email') as HTMLInputElement | null;
 
-  if (!form || !studentIdInput || !nameInput || !classInput || !emailInput) return;
+  if (!form || !studentIdInput || !nameInput || !classInput || !emailInput) {
+    console.error('Form elements not found.');
+    return;
+  }
 
+  // If studentIdParam exists, fetch student data and pre-fill form
   if (studentIdParam) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/getStudents/${studentIdParam}`);
       if (response.ok) {
         const student = await response.json();
-        studentIdInput.value = student.studentid;
-        nameInput.value = student.name;
-        classInput.value = student.class;
-        emailInput.value = student.email;
-        studentIdInput.disabled = true;
+        studentIdInput.value = student.studentid || '';
+        nameInput.value = student.name || '';
+        classInput.value = student.class || '';
+        emailInput.value = student.email || '';
+        studentIdInput.disabled = true; // Disable editing Student ID when updating
       } else {
         alert('Student not found');
       }
     } catch (error) {
+      console.error('Error loading student data:', error);
       alert('Error loading student data');
     }
   }
 
-  form.addEventListener('submit', async (e) => {
+  // Handle form submission for add or update
+  form.addEventListener('submit', async (e: Event) => {
     e.preventDefault();
+
     const data = {
-      studentId: studentIdInput.value,
-      name: nameInput.value,
-      class: classInput.value,
-      email: emailInput.value
+      studentId: studentIdInput.value.trim(),
+      name: nameInput.value.trim(),
+      class: classInput.value.trim(),
+      email: emailInput.value.trim(),
     };
+
     const apiUrl = studentIdParam
       ? `${API_BASE_URL}/api/students/${studentIdParam}`
       : `${API_BASE_URL}/api/addStudent`;
+
     const method = studentIdParam ? 'PUT' : 'POST';
 
     try {
       const response = await fetch(apiUrl, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
+
       if (response.ok) {
         alert(`Student ${studentIdParam ? 'updated' : 'added'} successfully`);
         window.location.href = 'studentdetail.html';
@@ -56,7 +65,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const errorText = await response.text();
         alert(`Failed to ${studentIdParam ? 'update' : 'add'} student:\n${errorText}`);
       }
-    } catch {
+    } catch (error) {
+      console.error('Form submission error:', error);
       alert(`Error ${studentIdParam ? 'updating' : 'adding'} student`);
     }
   });

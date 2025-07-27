@@ -1,77 +1,35 @@
+/* Reset & body */
 body {
-  /* font-family: 'Arial', sans-serif; */
   margin: 0;
-  background: rgb(104,182,205);
   background: linear-gradient(90deg, rgba(104,182,205,1) 0%, rgba(126,102,196,1) 50%, rgba(107,163,219,1) 100%);
+  font-family: Arial, sans-serif;
 }
 
-.navbar {
-  background: linear-gradient(135deg, #4d81b6, #9eafc0);
-  color: white;
-  padding: 25px 30px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  gap: 10px;
-}
-
-.title {
-  font-size: 2rem;
-  color: white;
-  margin: 0;
-  white-space: nowrap;
-  font-family: 'Lobster', cursive;
-}
-
-.nav-link {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  overflow-x: auto;
-  max-width: 100%; 
-  min-width: 0;
-}
-
-.nav-button {
-  padding: 15px 16px;
-  background-color: #3498db;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  white-space: nowrap;
-  transition: all 0.3s ease;
-}
-
-.nav-button:hover {
-  background-color: #e78fe3;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.nav-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
+/* Header */
 h1 {
   text-align: center;
+  margin: 1.5rem 0;
+  color: #2c3e50;
 }
 
+/* Form container */
 form {
-  margin: 30px auto 0 auto;
+  width: 90%;
   max-width: 860px;
+  margin: auto;
 }
 
+/* Table styles */
 table {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
   background-color: #fff;
+}
+
+thead tr {
+  background-color: #3498db;
+  color: white;
 }
 
 th, td {
@@ -88,6 +46,7 @@ th, td {
   color: red;
 }
 
+/* Radio buttons accent colors for modern browsers */
 input[type="radio"].present {
   accent-color: green;
 }
@@ -96,9 +55,10 @@ input[type="radio"].absent {
   accent-color: red;
 }
 
+/* Submit button */
 button[type="submit"] {
   display: block;
-  margin: 0 auto 20px auto;
+  margin: 20px auto;
   padding: 10px 20px;
   font-size: 16px;
   background-color: #27ae60;
@@ -111,4 +71,40 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: #219150;
+}
+
+/* Responsive Table for mobile/smaller screens */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  thead tr {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 15px;
+  }
+
+  td {
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Use data-label attribute for each cell's label */
+  td:before {
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    white-space: nowrap;
+    font-weight: bold;
+    content: attr(data-label);
+  }
 }

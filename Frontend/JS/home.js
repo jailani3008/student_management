@@ -8,45 +8,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-if (!localStorage.getItem("isLoggedIn")) {
-    window.location.href = "/HTML/login.html";
-}
-function fetchLatestAttendanceSummary() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            // Changed ONLY this line to use local backend
-            const response = yield fetch(`${API_BASE_URL}/latest-attendance-summary`);
-            const data = yield response.json();
-            let total = 0;
-            let present = 0;
-            let absent = 0;
-            data.summary.forEach((record) => {
-                const count = parseInt(record.count);
-                total += count;
-                if (record.status === "Present") {
-                    present = count;
-                }
-                else if (record.status === "Absent") {
-                    absent = count;
-                }
-            });
-            const percentage = total > 0 ? parseFloat(((present / total) * 100).toFixed(2)) : 0;
-            const totalStudentsEl = document.getElementById("totalStudents");
-            const presentCountEl = document.getElementById("presentCount");
-            const absentCountEl = document.getElementById("absentCount");
-            const percentageEl = document.getElementById("attendancePercentage");
-            if (totalStudentsEl && presentCountEl && absentCountEl && percentageEl) {
-                totalStudentsEl.innerText = `Total Students: ${total}`;
-                presentCountEl.innerText = `Present: ${present}`;
-                absentCountEl.innerText = `Absent: ${absent}`;
-                percentageEl.innerText = `Percentage: ${percentage}%`;
-            }
-        }
-        catch (error) {
-            console.error("Error fetching latest attendance summary:", error);
-        }
-    });
-}
 document.addEventListener("DOMContentLoaded", () => {
     fetchLatestAttendanceSummary();
 });
+function fetchLatestAttendanceSummary() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield fetch(`${API_BASE_URL}/attendance/count`);
+            if (!response.ok)
+                throw new Error(`Failed to load attendance summary: ${response.statusText}`);
+            const data = yield response.json();
+            populateDashboard(data);
+        }
+        catch (error) {
+            console.error("Error fetching attendance summary:", error);
+            alert("Unable to load attendance summary. Please try again later.");
+        }
+    });
+}
+function populateDashboard(data) {
+    const totalStudentsEl = document.getElementById("totalStudents");
+    const presentEl = document.getElementById("present");
+    const absentEl = document.getElementById("absent");
+    const percentageEl = document.getElementById("percentage");
+    if (totalStudentsEl)
+        totalStudentsEl.innerText = `Total Students: ${data.totalStudents}`;
+    if (presentEl)
+        presentEl.innerText = `Present: ${data.present}`;
+    if (absentEl)
+        absentEl.innerText = `Absent: ${data.absent}`;
+    if (percentageEl)
+        percentageEl.innerText = `Percentage: ${parseFloat(data.percentage).toFixed(2)}%`;
+}

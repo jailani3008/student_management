@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register</title>
-  <link rel="stylesheet" href="../CSS/register.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register - Student Management</title>
+  <link rel="stylesheet" href="../CSS/register.css" />
 </head>
 <body>
   <div class="account-container" id="accountContainer">
@@ -13,19 +13,33 @@
         <h1>Create Account</h1>
         <p>Register</p>
       </div>
-      <form id="registerForm">
+      <form id="registerForm" novalidate>
         <div class="form-group">
           <label for="username">Username or Email</label>
-          <input type="text" id="username" name="username" required>
+          <input type="text" id="username" name="username" placeholder="Enter username or email" required />
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" required>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter password"
+            required
+            minlength="6"
+          />
           <small class="password-hint">Must be at least 6 characters</small>
         </div>
         <div class="form-group">
           <label for="confirm-password">Confirm Password</label>
-          <input type="password" id="confirm-password" name="confirm-password" required>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            placeholder="Confirm password"
+            required
+            minlength="6"
+          />
         </div>
         <button type="submit" class="submit">Register</button>
         <div class="login-link">
@@ -34,7 +48,8 @@
       </form>
     </div>
   </div>
+
   <script src="../JS/config.js"></script>
-  <script src="../JS/register.js"></script> 
+  <script src="../JS/register.js"></script>
 </body>
 </html>

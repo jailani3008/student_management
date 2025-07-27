@@ -5,10 +5,18 @@
   <title>Student Marksheet</title>
   <!-- Optional: Correct the Lobster font typo for nav title -->
   <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/navbar.css">
   <link rel="stylesheet" href="../CSS/marksheet.css">
 </head>
 <body>
-  <div class="navbar">
+  <div id="navbar-placeholder"></div>
+<script>
+fetch('../HTML/navbar.html')
+  .then(r => r.text())
+  .then(d => { document.getElementById('navbar-placeholder').innerHTML = d; });
+</script>
+
+  <!-- <div class="navbar">
     <h1 class="title">Student Management System</h1>
     <div class="nav-link">
       <a href="/HTML/home.html" class="nav-button">Home</a>
@@ -18,7 +26,7 @@
       <a href="/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
       <a href="/HTML/logout.html" class="nav-button">LogOut</a>
     </div>
-  </div>
+  </div> -->
   <h1>Student Marksheet</h1>
   <form id="marksForm">
     <table border="1">

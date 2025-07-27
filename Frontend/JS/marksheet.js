@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+// Redirect to login page if not logged in (localStorage flag)
 if (!localStorage.getItem("isLoggedIn")) {
     window.location.href = "/HTML/login.html";
 }
@@ -15,23 +16,33 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
     const tbody = document.getElementById('marksTableBody');
     const form = document.getElementById('marksForm');
     const overallAverageEl = document.getElementById('overallAverage');
-    // FETCH from local backend!
-    const res = yield fetch(`${API_BASE_URL}/api/getStudents`);
-    const students = yield res.json();
-    students.forEach((student) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-      <td>${student.name}</td>
-      <td><input type="number" name="tamil-${student.studentid}" required></td>
-      <td><input type="number" name="english-${student.studentid}" required></td>
-      <td><input type="number" name="math-${student.studentid}" required></td>
-      <td><input type="number" name="science-${student.studentid}" required></td>
-      <td><input type="number" name="social-${student.studentid}" required></td>
-      <td class="avg-cell">0</td>
-    `;
-        row.setAttribute('data-id', student.studentid);
-        tbody.appendChild(row);
-    });
+    // Fetch students from backend
+    try {
+        const res = yield fetch(`${API_BASE_URL}/api/getStudents`);
+        if (!res.ok)
+            throw new Error('Failed to fetch students');
+        const students = yield res.json();
+        // Build table rows dynamically with data-label for responsiveness
+        students.forEach((student) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+        <td data-label="Name">${student.name}</td>
+        <td data-label="Tamil"><input type="number" name="tamil-${student.studentid}" min="0" max="100" required></td>
+        <td data-label="English"><input type="number" name="english-${student.studentid}" min="0" max="100" required></td>
+        <td data-label="Math"><input type="number" name="math-${student.studentid}" min="0" max="100" required></td>
+        <td data-label="Science"><input type="number" name="science-${student.studentid}" min="0" max="100" required></td>
+        <td data-label="Social"><input type="number" name="social-${student.studentid}" min="0" max="100" required></td>
+        <td data-label="Average" class="avg-cell">0</td>
+      `;
+            row.setAttribute('data-id', student.studentid);
+            tbody.appendChild(row);
+        });
+    }
+    catch (e) {
+        alert("Error loading student data. Please try again later.");
+        console.error(e);
+    }
+    // Handle form submission
     form.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault();
         const rows = Array.from(tbody.querySelectorAll('tr'));
@@ -39,7 +50,10 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
         let totalAverage = 0;
         for (const row of rows) {
             const studentId = row.getAttribute('data-id');
-            const marks = ['tamil', 'english', 'math', 'science', 'social'].map(subject => parseInt(row.querySelector(`input[name="${subject}-${studentId}"]`).value));
+            const marks = ['tamil', 'english', 'math', 'science', 'social'].map(subject => {
+                const input = row.querySelector(`input[name="${subject}-${studentId}"]`);
+                return Number(input.value);
+            });
             const average = marks.reduce((a, b) => a + b) / marks.length;
             totalAverage += average;
             marksData.push({
@@ -51,21 +65,27 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
                 social: marks[4],
                 average
             });
+            // Update average cell text
             const avgCell = row.querySelector('.avg-cell');
-            avgCell.textContent = average.toFixed(2); // show individual average
+            avgCell.textContent = average.toFixed(2);
         }
-        // POST to local backend!
-        const response = yield fetch(`${API_BASE_URL}/api/marks`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ records: marksData }),
-        });
-        if (response.ok) {
-            overallAverageEl.textContent = `Overall Average: ${(totalAverage / marksData.length).toFixed(2)}`;
-            alert("Marks submitted successfully!");
+        try {
+            const response = yield fetch(`${API_BASE_URL}/api/marks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ records: marksData }),
+            });
+            if (response.ok) {
+                overallAverageEl.textContent = `Overall Average: ${(totalAverage / marksData.length).toFixed(2)}`;
+                alert("Marks submitted successfully!");
+            }
+            else {
+                const errorText = yield response.text();
+                alert(`Failed to submit marks: ${errorText}`);
+            }
         }
-        else {
-            alert("Failed to submit marks.");
+        catch (_a) {
+            alert("Failed to submit marks. Please check your connection and try again.");
         }
     }));
 }));

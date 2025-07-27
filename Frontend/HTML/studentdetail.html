@@ -1,47 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Page</title>
-    <!-- Add Google Fonts for Lobster if you want the special font -->
-    <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../CSS/studentdetail.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Detail</title>
+
+  <!-- Google Font for Navbar title -->
+  <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet" />
+
+  <!-- Navbar CSS -->
+  <link rel="stylesheet" href="../CSS/navbar.css" />
+  <!-- Page CSS -->
+  <link rel="stylesheet" href="../CSS/studentdetail.css" />
 </head>
 <body>
-    <div class="navbar">
-        <h1 class="title">Student Management System</h1>
-        <div class="nav-link">
-            <a href="/HTML/home.html" class="nav-button">Home</a>
-            <a href="/HTML/attendance.html" class="nav-button">Attendance</a>
-            <a href="/HTML/studentdetail.html" class="nav-button">Student Detail</a>
-            <a href="/HTML/adddetails.html" class="nav-button">ADD Detail</a>
-            <a href="/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
-            <a href="/HTML/logout.html" class="nav-button" id="logoutBtn">LogOut</a>
-        </div>
-    </div>
-    <div class="container">
-        <h2>Student Details</h2>
-        <table id="studentTable">
-            <thead>
-                <tr>
-                    <th>S.No</th>
-                    <th>Student ID</th>
-                    <th>Name</th>
-                    <th>Class</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Student rows will be inserted here by JS -->
-            </tbody>
-        </table>
-    </div>
+  <!-- Navbar placeholder -->
+  <div id="navbar-placeholder"></div>
+  <script>
+    fetch('../HTML/navbar.html')
+      .then((res) => res.text())
+      .then((html) => {
+        document.getElementById('navbar-placeholder').innerHTML = html;
+      })
+      .catch(() => console.error('Failed to load navbar.html'));
+  </script>
 
+  <div class="container">
+    <h2>Student Details</h2>
+    <table id="studentTable">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Student ID</th>
+          <th>Name</th>
+          <th>Class</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows inserted by JS -->
+      </tbody>
+    </table>
+  </div>
 
-
-    <script src="../JS/config.js"></script>
-    <script src="../JS/studentdetail.js"></script>
+  <!-- Config for API -->
+  <script src="../JS/config.js"></script>
+  <!-- Compiled TypeScript JS -->
+  <script src="../JS/studentdetail.js"></script>
 </body>
 </html>

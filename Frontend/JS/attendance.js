@@ -11,32 +11,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 if (!localStorage.getItem("isLoggedIn")) {
     window.location.replace("/HTML/login.html");
 }
-document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, void 0, function* () {
+document.addEventListener('DOMContentLoaded', () => {
+    // Element references (with type safety)
     const tbody = document.getElementById('attendanceTableBody');
-    try {
-        const response = yield fetch(`${API_BASE_URL}/api/getStudents`);
-        const students = yield response.json();
-        students.forEach((student, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${student.name}</td>
-        <td>
-          <input type="radio" name="attendance-${student.studentid}" value="Present" class="present" required>
-        </td>
-        <td>
-          <input type="radio" name="attendance-${student.studentid}" value="Absent" class="absent" required>
-        </td>
-      `;
-            row.setAttribute('data-id', student.studentid);
-            tbody.appendChild(row);
+    const form = document.getElementById('attendanceForm');
+    if (!tbody || !form) {
+        console.error("Attendance table body or form not found in the DOM.");
+        return;
+    }
+    // Fetch student list and populate the table
+    function fetchStudents() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield fetch(`${API_BASE_URL}/api/getStudents`);
+                if (!response.ok)
+                    throw new Error(`Failed to fetch students: ${response.statusText}`);
+                const students = yield response.json();
+                students.forEach((student, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+          <td data-label="S.NO">${index + 1}</td>
+          <td data-label="Student Name">${student.name}</td>
+          <td data-label="Present">
+            <input type="radio" name="attendance-${student.studentid}" value="Present" class="present" required>
+          </td>
+          <td data-label="Absent">
+            <input type="radio" name="attendance-${student.studentid}" value="Absent" class="absent" required>
+          </td>
+        `;
+                    row.setAttribute('data-id', student.studentid);
+                    tbody.appendChild(row);
+                });
+            }
+            catch (error) {
+                console.error('Error fetching students:', error);
+                alert('Could not load students.');
+            }
         });
     }
-    catch (err) {
-        console.error('Error fetching students:', err);
-        alert('Could not load students.');
-    }
-    const form = document.getElementById('attendanceForm');
+    // Fill the table at page load
+    fetchStudents();
+    // Handle form submission
     form.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault();
         const rows = Array.from(tbody.querySelectorAll('tr'));
@@ -45,15 +60,13 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
             const statusInput = row.querySelector('input[type="radio"]:checked');
             return {
                 studentId,
-                status: statusInput === null || statusInput === void 0 ? void 0 : statusInput.value
+                status: statusInput ? statusInput.value : null
             };
         });
         try {
             const response = yield fetch(`${API_BASE_URL}/api/attendance`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ records: attendanceData })
             });
             if (response.ok) {
@@ -61,13 +74,13 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
                 location.reload();
             }
             else {
-                const error = yield response.text();
-                alert(`Error submitting attendance:\n${error}`);
+                const errorText = yield response.text();
+                alert(`Error submitting attendance:\n${errorText}`);
             }
         }
-        catch (err) {
-            console.error('Submission error:', err);
+        catch (error) {
+            console.error('Submission error:', error);
             alert('Failed to submit attendance');
         }
     }));
-}));
+});

@@ -1,50 +1,62 @@
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Get the form element by ID
-  
-  const form = document.getElementById('loginForm') as HTMLFormElement | null;
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("loginForm") as HTMLFormElement | null;
 
   if (!form) {
     console.error("loginForm element not found");
     return;
   }
 
-  form.addEventListener('submit', async (e: Event) => {
-    e.preventDefault();
+  form.addEventListener("submit", async (event: Event) => {
+    event.preventDefault();
 
-    const username = (document.getElementById('username') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
+    const usernameInput = document.getElementById("username") as HTMLInputElement | null;
+    const passwordInput = document.getElementById("password") as HTMLInputElement | null;
+
+    if (!usernameInput || !passwordInput) {
+      alert("Username or password input not found.");
+      return;
+    }
+
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!username || !password) {
+      alert("Please enter username and password.");
+      return;
+    }
 
     try {
       const response = await fetch(`${API_BASE_URL}/login`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json' // Explicitly expect JSON
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
       });
 
-      // First check if response is JSON
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
-        throw new Error(text || 'Invalid server response');
+        throw new Error(text || "Invalid server response");
       }
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.error || "Invalid username or password");
       }
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('isLoggedIn', 'true');
-      window.location.href = '/HTML/studentdetail.html';
+      // Store token and login flag in localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("isLoggedIn", "true");
 
-    } catch (error: any) {
-      console.error('Login error:', error);
-      alert(error.message || 'Login failed. Please try again.');
+      // Redirect to main student page or dashboard
+      window.location.href = "/HTML/studentdetail.html";
+    } catch (error) {
+      console.error("Login error:", error);
+      alert((error as Error).message || "Login failed. Please try again.");
     }
   });
 });
