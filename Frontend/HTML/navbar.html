@@ -17,6 +17,11 @@
     <a href="/HTML/logout.html" class="nav-button">LogOut</a>
   </div>
 </nav>
-
+<div id="navbar-placeholder"></div>
+<script>
+fetch('../HTML/navbar.html')
+  .then(r => r.text())
+  .then(d => { document.getElementById('navbar-placeholder').innerHTML = d; });
+</script>
 <script src="../JS/navbar.js"></script>
 
