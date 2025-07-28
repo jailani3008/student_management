@@ -1,57 +1,54 @@
+
 document.addEventListener('DOMContentLoaded', () => {
-  const accountContainer = document.getElementById('accountContainer') as HTMLElement | null;
-  const flipToLogin = document.getElementById('flipToLogin') as HTMLElement | null;
-  const registerForm = document.getElementById('registerForm') as HTMLFormElement | null;
+  const accountContainer = document.getElementById('account-container');
+  const flipLoginLink = document.getElementById('link-login') ?? document.getElementById('flip-login') ?? document.getElementById('flipLogin');
+
+  const registerForm = document.getElementById('register-form') as HTMLFormElement | null;
   const passwordInput = document.getElementById('password') as HTMLInputElement | null;
+  const confirmPasswordInput = document.getElementById('confirm-password') as HTMLInputElement | null;
   const passwordHint = document.querySelector('.password-hint') as HTMLElement | null;
 
-  if (!accountContainer || !flipToLogin || !registerForm || !passwordInput || !passwordHint) {
-    console.error('One or more elements for registration page are missing.');
+  if (!registerForm || !passwordInput || !confirmPasswordInput || !passwordHint) {
+    console.error('Some elements are missing.');
     return;
   }
 
-  // Flip to login page with animation
-  flipToLogin.addEventListener('click', (e: Event) => {
+  // Update password hint color on input
+  passwordInput.addEventListener('input', () => {
+    if (passwordInput.value.length < 6) {
+      passwordHint.textContent = 'Password must be at least 6 characters';
+      passwordHint.style.color = 'red';  // <-- No TS error: `passwordHint` typed as HTMLElement
+    } else {
+      passwordHint.textContent = '';
+      passwordHint.style.color = ''; // reset color to default
+    }
+  });
+
+  // Flip to login animation
+  flipLoginLink?.addEventListener('click', (e) => {
     e.preventDefault();
-    accountContainer.classList.add('flipped');
+    accountContainer?.classList.add('flipped');
     setTimeout(() => {
-      window.location.href = '/HTML/login.html';
+      window.location.href = '/login.html';
     }, 800);
   });
 
-  // Live password length hint
-  passwordInput.addEventListener('input', () => {
-    const password = passwordInput.value;
-    if (password.length < 6) {
-      passwordHint.textContent = 'Password must be at least 6 characters';
-      passwordHint.style.color = 'red';
-    } else {
-      passwordHint.textContent = '';
-    }
-  });
+  // Handle registration form submit
+  registerForm.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
 
-  // Handle form submit
-  registerForm.addEventListener('submit', async (e: Event) => {
-    e.preventDefault();
-
-    const usernameInput = document.getElementById('username') as HTMLInputElement | null;
-    const passwordInput = document.getElementById('password') as HTMLInputElement | null;
-    const confirmPasswordInput = document.getElementById('confirm-password') as HTMLInputElement | null;
-
-    if (!usernameInput || !passwordInput || !confirmPasswordInput) {
-      alert('Form inputs not found');
-      return;
-    }
-
-    const username = usernameInput.value.trim();
+    const username = (document.getElementById('username') as HTMLInputElement)?.value.trim();
     const password = passwordInput.value;
     const confirmPassword = confirmPasswordInput.value;
 
+    if (!username) {
+      alert('Please enter a username or email.');
+      return;
+    }
     if (password !== confirmPassword) {
       alert('Passwords do not match');
       return;
     }
-
     if (password.length < 6) {
       alert('Password must be at least 6 characters');
       return;
@@ -60,20 +57,34 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(`${API_BASE_URL}/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({ username, password }),
       });
 
-      if (response.ok) {
-        alert('User registered successfully');
-        window.location.href = '/HTML/login.html';
-      } else {
-        const errorText = await response.text();
-        alert('Registration failed: ' + errorText);
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(text || 'Invalid server response');
       }
-    } catch (error) {
-      console.error('Error during registration:', error);
-      alert('An error occurred during registration');
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed.');
+      }
+
+      alert('Registration successful! Redirecting to login...');
+      window.location.href = '/login.html';
+
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      alert('Error: ' + message);
+      console.error(err);
     }
+
   });
+
 });

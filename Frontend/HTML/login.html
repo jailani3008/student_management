@@ -4,45 +4,58 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - Student Management</title>
-
-  <!-- Link login page CSS -->
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans&display=swap" rel="stylesheet" />
+  
+  <!-- Login page CSS -->
   <link rel="stylesheet" href="../CSS/login.css" />
 </head>
 <body>
-  <div class="account-container" id="accountContainer">
-    <div class="login-container">
-      <div class="headers">
-        <h1>Welcome Back</h1>
-        <p>Enter your login ID</p>
-      </div>
-
-      <form id="loginForm" novalidate>
-        <div class="form-group">
-          <label for="username">Username or Email</label>
-          <input type="text" id="username" name="username" placeholder="Enter username or email" required />
-        </div>
-
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter password" required />
-        </div>
-
-        <button type="submit" class="submit">Login</button>
-
-        <div class="forgot-password">
-          <a href="/forgot-password">Forgot password?</a>
-        </div>
-
-        <div class="signup-link">
-          Don't have an account? <a href="/HTML/register.html" id="flipToRegister">Register</a>
-        </div>
-      </form>
+  <main class="login-main">
+    <div class="account-container" id="account-container">
+      <section class="login-box">
+        <header class="login-header">
+          <h1>Welcome Back</h1>
+          <p>Please login to your account</p>
+        </header>
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label for="username">Username or Email</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              placeholder="Enter username or email" 
+              required 
+              autocomplete="username"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              placeholder="Enter your password" 
+              required 
+              autocomplete="current-password"
+            />
+          </div>
+          <button type="submit" class="btn-submit">Login</button>
+          <div class="extra-links">
+            <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
+            <p class="signup-text">Don't have an account? <a href="/HTML/register.html" class="signup-link">Sign up</a></p>
+          </div>
+        </form>
+      </section>
     </div>
-  </div>
-
-  <!-- Load config to set API base URL -->
+  </main>
+  
+  <!-- Config with backend API URL -->
   <script src="../JS/config.js"></script>
-  <!-- Login logic -->
+  
+  <!-- Login logic JS -->
   <script src="../JS/login.js"></script>
 </body>
 </html>

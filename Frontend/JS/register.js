@@ -9,47 +9,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 document.addEventListener('DOMContentLoaded', () => {
-    const accountContainer = document.getElementById('accountContainer');
-    const flipToLogin = document.getElementById('flipToLogin');
-    const registerForm = document.getElementById('registerForm');
+    var _a, _b;
+    const accountContainer = document.getElementById('account-container');
+    const flipLoginLink = (_b = (_a = document.getElementById('link-login')) !== null && _a !== void 0 ? _a : document.getElementById('flip-login')) !== null && _b !== void 0 ? _b : document.getElementById('flipLogin');
+    const registerForm = document.getElementById('register-form');
     const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
     const passwordHint = document.querySelector('.password-hint');
-    if (!accountContainer || !flipToLogin || !registerForm || !passwordInput || !passwordHint) {
-        console.error('One or more elements for registration page are missing.');
+    if (!registerForm || !passwordInput || !confirmPasswordInput || !passwordHint) {
+        console.error('Some elements are missing.');
         return;
     }
-    // Flip to login page with animation
-    flipToLogin.addEventListener('click', (e) => {
-        e.preventDefault();
-        accountContainer.classList.add('flipped');
-        setTimeout(() => {
-            window.location.href = '/HTML/login.html';
-        }, 800);
-    });
-    // Live password length hint
+    // Update password hint color on input
     passwordInput.addEventListener('input', () => {
-        const password = passwordInput.value;
-        if (password.length < 6) {
+        if (passwordInput.value.length < 6) {
             passwordHint.textContent = 'Password must be at least 6 characters';
-            passwordHint.style.color = 'red';
+            passwordHint.style.color = 'red'; // <-- No TS error: `passwordHint` typed as HTMLElement
         }
         else {
             passwordHint.textContent = '';
+            passwordHint.style.color = ''; // reset color to default
         }
     });
-    // Handle form submit
-    registerForm.addEventListener('submit', (e) => __awaiter(void 0, void 0, void 0, function* () {
+    // Flip to login animation
+    flipLoginLink === null || flipLoginLink === void 0 ? void 0 : flipLoginLink.addEventListener('click', (e) => {
         e.preventDefault();
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirm-password');
-        if (!usernameInput || !passwordInput || !confirmPasswordInput) {
-            alert('Form inputs not found');
-            return;
-        }
-        const username = usernameInput.value.trim();
+        accountContainer === null || accountContainer === void 0 ? void 0 : accountContainer.classList.add('flipped');
+        setTimeout(() => {
+            window.location.href = '/login.html';
+        }, 800);
+    });
+    // Handle registration form submit
+    registerForm.addEventListener('submit', (ev) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
+        ev.preventDefault();
+        const username = (_a = document.getElementById('username')) === null || _a === void 0 ? void 0 : _a.value.trim();
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
+        if (!username) {
+            alert('Please enter a username or email.');
+            return;
+        }
         if (password !== confirmPassword) {
             alert('Passwords do not match');
             return;
@@ -61,21 +61,28 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = yield fetch(`${API_BASE_URL}/register`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 body: JSON.stringify({ username, password }),
             });
-            if (response.ok) {
-                alert('User registered successfully');
-                window.location.href = '/HTML/login.html';
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = yield response.text();
+                throw new Error(text || 'Invalid server response');
             }
-            else {
-                const errorText = yield response.text();
-                alert('Registration failed: ' + errorText);
+            const data = yield response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Registration failed.');
             }
+            alert('Registration successful! Redirecting to login...');
+            window.location.href = '/login.html';
         }
-        catch (error) {
-            console.error('Error during registration:', error);
-            alert('An error occurred during registration');
+        catch (err) {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            alert('Error: ' + message);
+            console.error(err);
         }
     }));
 });

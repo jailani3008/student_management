@@ -1,17 +1,17 @@
 
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("loginForm") as HTMLFormElement | null;
+  const form = document.getElementById("login-form") as HTMLFormElement | null;
 
   if (!form) {
-    console.error("loginForm element not found");
+    console.error("Login form not found");
     return;
   }
 
-  form.addEventListener("submit", async (event: Event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const usernameInput = document.getElementById("username") as HTMLInputElement | null;
-    const passwordInput = document.getElementById("password") as HTMLInputElement | null;
+    const usernameInput = form.querySelector("#username") as HTMLInputElement | null;
+    const passwordInput = form.querySelector("#password") as HTMLInputElement | null;
 
     if (!usernameInput || !passwordInput) {
       alert("Username or password input not found.");
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = passwordInput.value;
 
     if (!username || !password) {
-      alert("Please enter username and password.");
+      alert("Please enter both username and password.");
       return;
     }
 
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
@@ -45,18 +45,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Invalid username or password");
+        throw new Error(data.error || "Login failed");
       }
 
-      // Store token and login flag in localStorage
+      // Save token and logged-in flag
       localStorage.setItem("token", data.token);
       localStorage.setItem("isLoggedIn", "true");
 
-      // Redirect to main student page or dashboard
+      // Redirect to dashboard/home
       window.location.href = "/HTML/studentdetail.html";
     } catch (error) {
-      console.error("Login error:", error);
-      alert((error as Error).message || "Login failed. Please try again.");
+      alert(error instanceof Error ? error.message : "Login failed");
     }
   });
 });

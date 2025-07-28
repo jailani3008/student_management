@@ -9,15 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("loginForm");
+    const form = document.getElementById("login-form");
     if (!form) {
-        console.error("loginForm element not found");
+        console.error("Login form not found");
         return;
     }
     form.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
         event.preventDefault();
-        const usernameInput = document.getElementById("username");
-        const passwordInput = document.getElementById("password");
+        const usernameInput = form.querySelector("#username");
+        const passwordInput = form.querySelector("#password");
         if (!usernameInput || !passwordInput) {
             alert("Username or password input not found.");
             return;
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const username = usernameInput.value.trim();
         const password = passwordInput.value;
         if (!username || !password) {
-            alert("Please enter username and password.");
+            alert("Please enter both username and password.");
             return;
         }
         try {
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Accept": "application/json"
+                    "Accept": "application/json",
                 },
                 body: JSON.stringify({ username, password }),
             });
@@ -44,17 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             const data = yield response.json();
             if (!response.ok) {
-                throw new Error(data.error || "Invalid username or password");
+                throw new Error(data.error || "Login failed");
             }
-            // Store token and login flag in localStorage
+            // Save token and logged-in flag
             localStorage.setItem("token", data.token);
             localStorage.setItem("isLoggedIn", "true");
-            // Redirect to main student page or dashboard
+            // Redirect to dashboard/home
             window.location.href = "/HTML/studentdetail.html";
         }
         catch (error) {
-            console.error("Login error:", error);
-            alert(error.message || "Login failed. Please try again.");
+            alert(error instanceof Error ? error.message : "Login failed");
         }
     }));
 });
