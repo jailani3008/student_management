@@ -1,4 +1,5 @@
 
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("login-form") as HTMLFormElement | null;
 
@@ -10,16 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const usernameInput = form.querySelector("#username") as HTMLInputElement | null;
-    const passwordInput = form.querySelector("#password") as HTMLInputElement | null;
-
-    if (!usernameInput || !passwordInput) {
-      alert("Username or password input not found.");
-      return;
-    }
-
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value;
+    const username = (form.querySelector("#username") as HTMLInputElement).value.trim();
+    const password = (form.querySelector("#password") as HTMLInputElement).value;
 
     if (!username || !password) {
       alert("Please enter both username and password.");
@@ -27,11 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
@@ -48,14 +41,15 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(data.error || "Login failed");
       }
 
-      // Save token and logged-in flag
       localStorage.setItem("token", data.token);
       localStorage.setItem("isLoggedIn", "true");
 
-      // Redirect to dashboard/home
       window.location.href = "/HTML/studentdetail.html";
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "Login failed");
+
+    } catch (err) {
+      const message = (err instanceof Error) ? err.message : "Unknown error occurred";
+      alert(message);
+      console.error(err);
     }
   });
 });
