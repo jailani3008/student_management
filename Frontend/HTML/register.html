@@ -4,75 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Register - Student Management</title>
-
-  <!-- Google Fonts for stylish headers -->
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans&display=swap" rel="stylesheet" />
-
-  <!-- Navbar Styles -->
-  <link rel="stylesheet" href="../CSS/navbar.css" />
-
-  <!-- Register Page Styles -->
   <link rel="stylesheet" href="../CSS/register.css" />
 </head>
 <body>
-
-  <!-- Navbar Placeholder -->
-  <div id="navbar-placeholder"></div>
-
-  <script>
-    fetch('../HTML/navbar.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('navbar-placeholder').innerHTML = html;
-
-        // After navbar injection, load navbar JS
-        const script = document.createElement('script');
-        script.src = '../JS/navbar.js';
-        document.body.appendChild(script);
-      })
-      .catch(() => console.error('Failed to load navbar'));
-  </script>
-
   <main class="register-main">
     <div class="account-container" id="account-container">
-      <div class="signup-container">
-        <div class="headers">
-          <h1>Register</h1>
-          <p>Create your account</p>
-        </div>
+      <section class="signup-box">
+        <header class="signup-header">
+          <h1>Create Your Account</h1>
+          <p>Register now</p>
+        </header>
 
         <form id="register-form" novalidate>
           <div class="form-group">
             <label for="username">Username or Email</label>
-            <input id="username" name="username" type="text" placeholder="Enter username or email" required autocomplete="username" />
+            <input type="text" id="username" name="username" 
+                   placeholder="Enter username or email" required autocomplete="username" />
           </div>
 
           <div class="form-group">
             <label for="password">Password</label>
-            <input id="password" name="password" type="password" placeholder="Enter password" minlength="6" required autocomplete="new-password" />
+            <input type="password" id="password" name="password" minlength="6" 
+                   placeholder="Enter password" required autocomplete="new-password" />
             <small class="password-hint">Minimum 6 characters</small>
           </div>
 
           <div class="form-group">
             <label for="confirm-password">Confirm Password</label>
-            <input id="confirm-password" name="confirm-password" type="password" placeholder="Confirm password" minlength="6" required autocomplete="new-password" />
+            <input type="password" id="confirm-password" name="confirm-password" minlength="6" 
+                   placeholder="Confirm password" required autocomplete="new-password" />
             <small class="password-match" id="password-match"></small>
           </div>
 
           <button type="submit" class="btn-submit">Register</button>
 
-          <div class="login-link">
-            Already have an account? <a href="/HTML/login.html" id="link-login">Log in</a>
+          <div class="signup-footer">
+            <p>Already have an account? <a href="/HTML/login.html" id="link-login">Log in</a></p>
           </div>
         </form>
-      </div>
+      </section>
     </div>
   </main>
 
-  <!-- Load Config first -->
   <script src="../JS/config.js"></script>
-  <!-- Form logic -->
   <script src="../JS/register.js"></script>
-
 </body>
 </html>

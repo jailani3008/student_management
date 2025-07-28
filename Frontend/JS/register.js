@@ -8,81 +8,100 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-document.addEventListener('DOMContentLoaded', () => {
-    var _a, _b;
-    const accountContainer = document.getElementById('account-container');
-    const flipLoginLink = (_b = (_a = document.getElementById('link-login')) !== null && _a !== void 0 ? _a : document.getElementById('flip-login')) !== null && _b !== void 0 ? _b : document.getElementById('flipLogin');
-    const registerForm = document.getElementById('register-form');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    const passwordHint = document.querySelector('.password-hint');
-    if (!registerForm || !passwordInput || !confirmPasswordInput || !passwordHint) {
-        console.error('Some elements are missing.');
+document.addEventListener("DOMContentLoaded", () => {
+    const accountContainer = document.getElementById("account-container");
+    const linkLogin = document.getElementById("link-login");
+    const form = document.getElementById("register-form");
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirm-password");
+    const passwordHint = document.querySelector(".password-hint");
+    const passwordMatchText = document.getElementById("password-match");
+    if (!form || !passwordInput || !confirmPasswordInput || !passwordHint) {
+        console.error("Required elements missing.");
         return;
     }
-    // Update password hint color on input
-    passwordInput.addEventListener('input', () => {
-        if (passwordInput.value.length < 6) {
-            passwordHint.textContent = 'Password must be at least 6 characters';
-            passwordHint.style.color = 'red'; // <-- No TS error: `passwordHint` typed as HTMLElement
+    // Animate flipping to login page for UX when clicking link
+    if (linkLogin && accountContainer) {
+        linkLogin.addEventListener("click", (e) => {
+            e.preventDefault();
+            accountContainer.classList.add("flipped");
+            setTimeout(() => {
+                window.location.href = "/HTML/login.html";
+            }, 800);
+        });
+    }
+    // Real-time password length hint
+    passwordInput.addEventListener("input", () => {
+        const len = passwordInput.value.length;
+        if (len < 6) {
+            passwordHint.textContent = "Minimum 6 characters required";
+            passwordHint.style.color = "red";
         }
         else {
-            passwordHint.textContent = '';
-            passwordHint.style.color = ''; // reset color to default
+            passwordHint.textContent = "";
         }
     });
-    // Flip to login animation
-    flipLoginLink === null || flipLoginLink === void 0 ? void 0 : flipLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        accountContainer === null || accountContainer === void 0 ? void 0 : accountContainer.classList.add('flipped');
-        setTimeout(() => {
-            window.location.href = '/login.html';
-        }, 800);
+    // Real-time password match check
+    confirmPasswordInput.addEventListener("input", () => {
+        if (passwordInput.value.length >= 6 &&
+            confirmPasswordInput.value !== passwordInput.value) {
+            if (passwordMatchText) {
+                passwordMatchText.textContent = "Passwords do not match";
+                passwordMatchText.style.color = "red";
+            }
+        }
+        else {
+            if (passwordMatchText)
+                passwordMatchText.textContent = "";
+        }
     });
-    // Handle registration form submit
-    registerForm.addEventListener('submit', (ev) => __awaiter(void 0, void 0, void 0, function* () {
-        var _a;
-        ev.preventDefault();
-        const username = (_a = document.getElementById('username')) === null || _a === void 0 ? void 0 : _a.value.trim();
+    form.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
+        event.preventDefault();
+        const usernameInput = document.getElementById("username");
+        if (!usernameInput) {
+            alert("Please enter a username or email.");
+            return;
+        }
+        const username = usernameInput.value.trim();
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
         if (!username) {
-            alert('Please enter a username or email.');
+            alert("Username or email cannot be empty.");
             return;
         }
         if (password !== confirmPassword) {
-            alert('Passwords do not match');
+            alert("Passwords do not match.");
             return;
         }
         if (password.length < 6) {
-            alert('Password must be at least 6 characters');
+            alert("Password must be at least 6 characters.");
             return;
         }
         try {
             const response = yield fetch(`${API_BASE_URL}/register`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
                 },
                 body: JSON.stringify({ username, password }),
             });
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
                 const text = yield response.text();
-                throw new Error(text || 'Invalid server response');
+                throw new Error(text || "Invalid response from server");
             }
             const data = yield response.json();
             if (!response.ok) {
-                throw new Error(data.error || 'Registration failed.');
+                throw new Error(data.error || "Registration failed");
             }
-            alert('Registration successful! Redirecting to login...');
-            window.location.href = '/login.html';
+            alert("Registration successful! Redirecting to login...");
+            window.location.href = "/HTML/login.html";
         }
-        catch (err) {
-            const message = err instanceof Error ? err.message : 'Unknown error';
-            alert('Error: ' + message);
-            console.error(err);
+        catch (error) {
+            const message = error instanceof Error ? error.message : "Unknown error occurred";
+            alert(message);
+            console.error("Registration error:", error);
         }
     }));
 });
