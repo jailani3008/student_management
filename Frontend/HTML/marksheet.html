@@ -11,10 +11,11 @@
 <body>
   <div id="navbar-placeholder"></div>
 <script>
-fetch('../HTML/navbar.html')
-  .then(r => r.text())
-  .then(d => { document.getElementById('navbar-placeholder').innerHTML = d; });
+  fetch('../HTML/navbar.html')
+  .then(res => res.text())
+  .then(html => { document.getElementById('navbar-placeholder').innerHTML = html; });
 </script>
+<script src="../JS/navbar.js"></script>
 
   <!-- <div class="navbar">
     <h1 class="title">Student Management System</h1>

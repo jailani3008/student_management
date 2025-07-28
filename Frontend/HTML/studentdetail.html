@@ -16,14 +16,12 @@
 <body>
   <!-- Navbar placeholder -->
   <div id="navbar-placeholder"></div>
-  <script>
-    fetch('../HTML/navbar.html')
-      .then((res) => res.text())
-      .then((html) => {
-        document.getElementById('navbar-placeholder').innerHTML = html;
-      })
-      .catch(() => console.error('Failed to load navbar.html'));
-  </script>
+<script>
+  fetch('../HTML/navbar.html')
+  .then(res => res.text())
+  .then(html => { document.getElementById('navbar-placeholder').innerHTML = html; });
+</script>
+<script src="../JS/navbar.js"></script>
 
   <div class="container">
     <h2>Student Details</h2>

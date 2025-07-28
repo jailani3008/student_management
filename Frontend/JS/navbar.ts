@@ -1,19 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // In case navbar is dynamically injected (with fetch), call this again after the navbar is loaded
+  // Setup the hamburger menu toggle
   function setupNavbarToggle(): void {
     const toggle = document.querySelector('.navbar-toggle') as HTMLButtonElement | null;
-    const links = document.querySelector('.nav-link') as HTMLElement | null;
-    if (toggle && links) {
-      toggle.addEventListener('click', function () {
-        links.classList.toggle('active');
-        this.classList.toggle('is-open');
-      });
+    const navLinks = document.querySelector('.nav-link') as HTMLElement | null;
+
+    if (!toggle || !navLinks) {
+      console.warn('Navbar toggle button or nav links container not found!');
+      return;
     }
+
+    toggle.addEventListener('click', function () {
+      const isActive = navLinks.classList.toggle('active');
+      this.classList.toggle('is-open');
+
+      // Update ARIA attribute for accessibility
+      this.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+    });
   }
 
-  // Run once DOM is ready
   setupNavbarToggle();
 
-  // For dynamically loaded navbars (via fetch), repeat after short delay
-  setTimeout(setupNavbarToggle, 200);
+  // If navbar is loaded dynamically (e.g., via fetch), you can call this function again after injection
 });
