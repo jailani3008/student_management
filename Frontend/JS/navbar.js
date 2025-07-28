@@ -1,12 +1,9 @@
 "use strict";
-// Add this in navbar.ts, then compile to navbar.js for production use
-Object.defineProperty(exports, "__esModule", { value: true });
 function setupNavbarToggle() {
     const toggle = document.querySelector('.navbar-toggle');
     const navLinks = document.querySelector('.nav-link');
     if (!toggle || !navLinks) {
-        // Try again in 100ms in case of delayed insertion (due to fetch etc)
-        setTimeout(setupNavbarToggle, 100);
+        setTimeout(setupNavbarToggle, 100); // Try again after delay in case navbar loaded via fetch
         return;
     }
     toggle.addEventListener('click', function () {
@@ -14,7 +11,6 @@ function setupNavbarToggle() {
         this.classList.toggle('is-open');
         this.setAttribute('aria-expanded', isActive ? 'true' : 'false');
     });
-    // Optional: close menu if you click a nav link (mobile UX)
     navLinks.querySelectorAll('.nav-button').forEach(link => {
         link.addEventListener('click', () => {
             navLinks.classList.remove('active');
@@ -23,7 +19,6 @@ function setupNavbarToggle() {
         });
     });
 }
-// Will run after DOM loaded, and via setTimeout will retry if navbar is dynamically inserted via fetch
 if (document.readyState === "loading") {
     document.addEventListener('DOMContentLoaded', setupNavbarToggle);
 }
