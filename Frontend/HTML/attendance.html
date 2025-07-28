@@ -12,13 +12,19 @@
 </head>
 <body>
   <!-- Navbar placeholder -->
-  <div id="navbar-placeholder"></div>
+<div id="navbar-placeholder"></div>
 <script>
-  fetch('../HTML/navbar.html')
+fetch('../HTML/navbar.html')
   .then(res => res.text())
-  .then(html => { document.getElementById('navbar-placeholder').innerHTML = html; });
+  .then(html => {
+    document.getElementById('navbar-placeholder').innerHTML = html;
+    // Load JS after navbar inserted
+    const script = document.createElement('script');
+    script.src = '../JS/navbar.js';
+    document.body.appendChild(script);
+  });
 </script>
-<script src="../JS/navbar.js"></script>
+
 
   <h1>Student Attendance</h1>
 
