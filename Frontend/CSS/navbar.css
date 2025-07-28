@@ -5,19 +5,40 @@
   color: white;
   padding: 16px 8px;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 2px 5px rgba(0,0,0,0.09);
   gap: 10px;
+  position: relative;
 }
 
 .title {
   font-size: 2rem;
   color: white;
   margin: 0;
-  font-family: Verdana, Geneva, sans-serif;
+  font-family: Verdana, Geneva, sans-serif; /* Use your normal font here */
   white-space: nowrap;
+}
+
+/* Hamburger styles (hidden on desktop) */
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: 8px;
+  z-index: 1002;
+}
+.navbar-toggle .bar {
+  display: block;
+  width: 28px;
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+  transition: 0.3s;
 }
 
 .nav-link {
@@ -27,6 +48,7 @@
   justify-content: flex-end;
 }
 
+/* Nav buttons */
 .nav-button {
   padding: 10px 14px;
   background-color: #3498db;
@@ -37,28 +59,57 @@
   transition: background 0.3s;
   min-width: 75px;
 }
-
 .nav-button:hover {
   background-color: #e78fe3;
 }
 
+/* Responsive: hamburger on small screens */
 @media (max-width: 780px) {
   .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 4px;
-  }
-  .nav-link {
-    margin-top: 8px;
-    gap: 0;
-  }
-  .nav-button {
-    margin: 4px 6px 0 0;
-    padding: 9px 12px;
-    font-size: 14px;
+    flex-wrap: wrap;
+    flex-direction: row;
+    padding: 10px 8px;
   }
   .title {
     font-size: 1.3rem;
+  }
+  .navbar-toggle {
+    display: flex;
+  }
+  .nav-link {
+    /* Hidden by default, shown when "active" */
+    display: none;
+    position: absolute;
+    left: 0; right: 0;
+    top: 60px;
+    background: linear-gradient(135deg, #4d81b6, #9eafc0);
+    flex-direction: column;
+    gap: 0;
+    z-index: 1001;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+    animation: slide-down 0.25s;
+  }
+  .nav-link.active {
+    display: flex;
+  }
+  .nav-button {
+    width: 90%;
+    margin: 8px auto;
+    font-size: 1rem;
+    text-align: center;
+    padding: 12px 0;
+  }
+  /* Hamburger animation (X icon when open) */
+  .navbar-toggle.is-open .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .navbar-toggle.is-open .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .navbar-toggle.is-open .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
   }
 }
 @media (max-width: 500px) {
@@ -68,12 +119,8 @@
   .title {
     font-size: 1rem;
   }
-  .nav-link {
-    gap: 0;
-  }
-  .nav-button {
-    font-size: 12px;
-    padding: 7px 8px;
-    margin: 2px 2px 0 0;
-  }
+}
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-20px);}
+  to { opacity: 1; transform: translateY(0);}
 }

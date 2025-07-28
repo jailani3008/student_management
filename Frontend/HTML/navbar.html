@@ -1,5 +1,13 @@
 <nav class="navbar">
   <h1 class="title">Student Management System</h1>
+  
+  <!-- Hamburger button, only visible on mobile/tablet -->
+  <button class="navbar-toggle" aria-label="Toggle navigation">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+  
   <div class="nav-link">
     <a href="/HTML/home.html" class="nav-button">Home</a>
     <a href="/HTML/attendance.html" class="nav-button">Attendance</a>
@@ -9,3 +17,15 @@
     <a href="/HTML/logout.html" class="nav-button">LogOut</a>
   </div>
 </nav>
+
+<!-- Hamburger JS for toggle -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const toggle = document.querySelector('.navbar-toggle');
+  const links = document.querySelector('.nav-link');
+  toggle?.addEventListener('click', function () {
+    links?.classList.toggle('active');
+    this.classList.toggle('is-open');
+  });
+});
+</script>
