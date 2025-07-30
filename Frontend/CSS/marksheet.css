@@ -108,7 +108,7 @@ button[type="submit"]:hover {
 
 /* Responsive layout for narrow screens */
 @media (max-width: 768px) {
-  .marksheet-section { padding: 11px 2vw 18px 2vw; max-width: 99vw; }
+  .marksheet-section { padding: 10px 2vw 14px 2vw; max-width: 99vw; }
   form { max-width: 99vw; }
   table, thead, tbody, th, td, tr {
     display: block;
@@ -116,32 +116,49 @@ button[type="submit"]:hover {
     box-sizing: border-box;
   }
   thead tr { display: none; }
-  tr { margin-bottom: 17px; border-bottom: 2px solid #eee; }
+  tr {
+    margin-bottom: 20px;
+    background: #f5f9fe !important; /* Matches desktop alt row */
+    border-radius: 7px;
+    box-shadow: 0 1px 8px rgba(100,160,210,0.04);
+    padding: 10px 0;
+  }
   td {
     position: relative;
-    padding-left: 45%;
+    padding: 11px 12px 11px 53%;
     text-align: left;
-    font-size: 14px;
+    font-size: 15px;
     border: none;
-    border-bottom: 1px solid #ddd;
-    min-height: 38px;
+    border-bottom: 1px solid #e1e7ef;
+    min-height: 32px;
+    background: transparent;
+    word-break: break-word;
+    overflow-x: auto;
   }
   td:before {
     position: absolute;
     left: 12px;
-    top: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     white-space: nowrap;
     font-weight: bold;
     color: #397ebd;
     font-size: 1em;
     content: attr(data-label);
+    min-width: 96px;
+    max-width: 45vw;
+  }
+  input[type="number"] {
+    width: 95%;
+    min-width: 65px;
+    font-size: 1.03em;
   }
   button[type="submit"] { width: 100%; }
 }
 
 @media (max-width: 480px) {
-  .marksheet-section { padding: 5px 2px 10px 2px; }
-  h1 { font-size: 1.15rem; }
+  .marksheet-section { padding: 5px 2px 7px 2px }
+  h1 { font-size: 1.12rem; }
   button[type="submit"] { font-size: 0.93rem; }
-  th, td { font-size: .98rem; padding: 11px 6px; }
+  th, td { font-size: .99rem; padding: 12px 6px 12px 52%; }
 }
