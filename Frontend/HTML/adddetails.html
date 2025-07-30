@@ -4,35 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Add Student Details</title>
-
   <link rel="stylesheet" href="../CSS/adddetails.css" />
 </head>
 <body>
-  <div class="form-container">
-    <h2>Add Student Details</h2>
-    <form id="studentForm">
-      <label for="studentId">Student ID:</label>
-      <input type="text" id="studentId" name="studentId" required />
-      
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required />
-      
-      <label for="class">Class:</label>
-      <input type="text" id="class" name="class" required />
-      
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required />
-      
-      <div class="button-group">
-        <button type="button" onclick="history.back()">Back</button>
-        <button type="submit">Submit</button>
-      </div>
-    </form>
-  </div>
+  <main class="main-centered">
+    <div class="form-container">
+      <h2>Add Student Details</h2>
+      <form id="studentForm" class="animate-in">
+        <label for="studentId">Student ID:</label>
+        <input type="text" id="studentId" name="studentId" required />
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+        <label for="class">Class:</label>
+        <input type="text" id="class" name="class" required />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+        <div class="button-group">
+          <button type="button" onclick="history.back()">Back</button>
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+  </main>
 
-  <!-- Global config -->
   <script src="../JS/config.js"></script>
-  <!-- Page JS -->
   <script src="../JS/adddetails.js"></script>
 </body>
 </html>

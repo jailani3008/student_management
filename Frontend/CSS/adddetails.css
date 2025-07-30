@@ -1,92 +1,166 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle, #eaeacb 0%, #93bbe5 100%);
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+body {
+  min-height: 100vh;
+  font-family: 'Open Sans', Arial, sans-serif;
+  background: linear-gradient(115deg, #e0eafc 0%, #cfdef3 100%);
+  color: #305078;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-centered {
+  width: 100%;
+  min-height: 100vh;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .form-container {
-  background: #f9edf6;
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 30px 24px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 410px;
+  background: rgba(255,255,255,0.88);
+  border-radius: 18px;
+  box-shadow: 0 4px 22px rgba(104, 182, 205, 0.16), 0 1.5px 4px rgba(153,196,220,0.09);
+  padding: 38px 28px 30px 28px;
+  animation: fadeInGlass 0.65s cubic-bezier(0.35,0.86,0.42,1.03);
+}
+
+@keyframes fadeInGlass {
+  from { opacity: 0; transform: translateY(32px) scale(0.98);}
+  to   { opacity: 1; transform: translateY(0) scale(1);}
+}
+
+/* Animated form slide-in */
+.animate-in {
+  animation: formPop .52s cubic-bezier(.44,.91,.37,1.14);
+}
+@keyframes formPop {
+  from { opacity: 0; transform: scale(0.96);}
+  50% { transform: scale(1.03);}
+  to { opacity: 1; transform: scale(1);}
 }
 
 .form-container h2 {
   text-align: center;
-  color: #222;
-  margin-bottom: 22px;
+  color: #2370a8;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 2.1rem;
+  text-shadow: 0 1px 4px #92bde8a8;
+  user-select: none;
 }
 
 .form-container form {
   display: flex;
   flex-direction: column;
+  gap: 0.6rem;
 }
 
 .form-container label {
-  margin-top: 10px;
-  font-weight: bold;
-  color: #444;
+  font-weight: 600;
+  color: #294173;
+  font-size: 1.04rem;
+  margin-top: 6px;
+  margin-bottom: 3px;
 }
 
 .form-container input {
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  font-size: 16px;
+  padding: 11px 13px;
+  font-size: 1.07rem;
+  border: 1.6px solid #a3cbec;
+  border-radius: 9px;
+  background: #f4fafd;
+  color: #26405a;
+  box-shadow: 0 1.5px 8px #c4e6fc31;
+  margin-bottom: 7px;
+  transition: border-color 0.23s, box-shadow 0.23s, background 0.25s;
+}
+.form-container input:focus {
+  outline: none;
+  border-color: #6fbcfb;
+  background: #eaf6fb;
+  box-shadow: 0 0 10px #8fd6ff8a;
 }
 
+/* Button group, both inline & stacked on mobile */
 .button-group {
   display: flex;
   justify-content: space-between;
-  margin-top: 28px;
   gap: 10px;
+  margin-top: 25px;
 }
 
 .form-container button {
-  padding: 10px 18px;
-  font-size: 16px;
+  padding: 11px 0;
+  width: 48%;
+  font-size: 1.07rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 3px 14px #a6defb44;
+  background: #85defe;
+  color: #116399;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.22s, box-shadow 0.22s, color 0.18s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .form-container button[type="submit"] {
-  background-color: #2ecc71;
-  color: white;
+  background: linear-gradient(90deg, #44d0fc 0%, #5cfbc6 100%);
+  color: #085972;
 }
 
-.form-container button[type="submit"]:hover {
-  background-color: #27ae60;
+.form-container button[type="submit"]:hover,
+.form-container button[type="submit"]:focus {
+  background: linear-gradient(90deg, #5cfbc6 0%, #44d0fc 100%);
+  color: #126c93;
+  box-shadow: 0 5px 18px #97ffe940;
 }
 
 .form-container button[type="button"] {
-  background-color: #3498db;
-  color: white;
+  background: #b1cdfc;
+  color: #275b81;
 }
-
-.form-container button[type="button"]:hover {
-  background-color: #2980b9;
+.form-container button[type="button"]:hover,
+.form-container button[type="button"]:focus {
+  background: #7edcfa;
+  color: #2179ad;
+  box-shadow: 0 5px 18px #b1cdfc33;
 }
 
 /* Responsive for mobile */
 @media (max-width: 600px) {
   .form-container {
-    padding: 15px 4vw;
-    max-width: 98vw;
+    padding: 14px 6vw 22px 6vw;
+    max-width: 99vw;
   }
-  
-  .form-container label,
-  .form-container input {
-    font-size: 14px;
+  .form-container h2 {
+    font-size: 1.35rem;
+    margin-bottom: 1.2rem;
   }
-  
   .button-group {
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+  }
+  .form-container button {
+    width: 100%;
+  }
+  .form-container input, .form-container label {
+    font-size: 0.98rem;
   }
 }
