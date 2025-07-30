@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Verdana:700&display=swap');
 
 .navbar {
-  background: linear-gradient(135deg, #4d81b6, #9eafc0);
+  background: rgba(76, 129, 182, 0.98);
+  background: linear-gradient(135deg, #4d81b6, #9eafc0 80%);
   color: white;
   padding: 16px 20px;
   display: flex;
@@ -9,17 +11,21 @@
   justify-content: space-between;
   gap: 10px;
   position: relative;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  font-family: Verdana, Geneva, sans-serif;
+  box-shadow: 0 2px 8px rgba(42,53,83,0.09), 0 8px 32px rgba(77, 129, 182, 0.12);
+  font-family: 'Verdana', Geneva, sans-serif;
   z-index: 1000;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
 }
 
 .title {
+  font-family: 'Lobster', 'Verdana', Geneva, sans-serif;
   font-weight: 700;
   font-size: 2rem;
   margin: 0;
   white-space: nowrap;
   user-select: none;
+  letter-spacing: 2px;
 }
 
 .navbar-toggle {
@@ -28,18 +34,22 @@
   background: none;
   border: none;
   cursor: pointer;
-  gap: 6px;
-  padding: 9px 8px;
+  gap: 7px;
+  padding: 8px 9px;
   margin-left: auto;
   z-index: 1100;
+  outline: none;
 }
 
 .bar {
-  width: 28px;
+  width: 29px;
   height: 3px;
   border-radius: 2px;
   background: white;
-  transition: transform 0.25s, opacity 0.25s;
+  transition: 
+    transform 0.28s cubic-bezier(.45,.7,.44,1.08), 
+    opacity 0.22s,
+    background 0.25s;
 }
 
 .nav-link {
@@ -51,76 +61,94 @@
 }
 
 .nav-link .nav-button {
-  padding: 10px 14px;
-  background-color: #3498db;
+  padding: 10px 18px;
+  background: linear-gradient(90deg, #3498db 0%, #76b0ea 100%);
   color: white;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: 5px;
   font-size: 15px;
-  transition: background 0.3s, transform 0.2s;
-  min-width: 75px;
+  box-shadow: 0 2px 6px #2980b944;
+  transition: 
+    background 0.35s,
+    transform 0.22s,
+    color 0.18s,
+    box-shadow 0.22s;
+  min-width: 80px;
+  font-weight: 600;
 }
 
 .nav-link .nav-button:hover,
 .nav-link .nav-button:focus {
-  background-color: #e78fe3;
-  transform: translateY(-2px);
+  background: linear-gradient(90deg, #e78fe3 0%, #b2e0ff 100%);
+  color: #212158;
+  transform: translateY(-2px) scale(1.03);
   outline: none;
+  box-shadow: 0 8px 19px #84cafc22;
 }
 
 /* Hamburger open animation */
 .navbar-toggle.is-open .bar:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(10px) rotate(45deg);
 }
 .navbar-toggle.is-open .bar:nth-child(2) {
   opacity: 0;
 }
 .navbar-toggle.is-open .bar:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+  transform: translateY(-10px) rotate(-45deg);
 }
 
 /* Responsive styles */
 @media (max-width: 780px) {
   .navbar {
     flex-wrap: wrap;
+    border-bottom-left-radius: 13px;
+    border-bottom-right-radius: 13px;
+    padding-bottom: 8px;
   }
   .navbar-toggle {
     display: flex;
+    outline: none;
   }
   .nav-link {
     display: none;
     position: absolute;
-    top: 61px; /* adjust for navbar height */
+    top: 61px;
     left: 0; right: 0;
     flex-direction: column;
-    background: linear-gradient(135deg, #4d81b6, #9eafc0);
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    animation: slideDown 0.35s;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-    z-index: 1001;
+    background: linear-gradient(135deg, #4d81b6 90%, #9eafc0 100%);
+    border-bottom-left-radius: 13px;
+    border-bottom-right-radius: 13px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12), 0 8px 24px #a1c7fcd0;
+    z-index: 1003;
+    animation: slideDown 0.33s;
+    gap: 0;
+    padding: 10px 0 9px 0;
   }
   .nav-link.active {
     display: flex;
   }
   .nav-link .nav-button {
-    width: 94%;
-    margin: 8px auto;
-    font-size: 1.1rem;
+    width: 90vw;
+    margin: 8px auto 0 auto;
+    font-size: 1.13rem;
     text-align: center;
-    padding: 12px 0;
+    padding: 13px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 18px #3f6babe0;
   }
   .title {
-    font-size: 1.4rem;
+    font-size: 1.38rem;
+    margin-right: auto;
   }
 }
 
 @media (max-width: 500px) {
-  .navbar { padding: 6px 2px; }
-  .title { font-size: 1.05rem; }
+  .navbar { padding: 5px 2px; }
+  .title { font-size: 1rem; }
 }
 
+/* Slide-down animation for mobile */
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-18px);}
+  from { opacity: 0; transform: translateY(-14px);}
   to   { opacity: 1; transform: translateY(0);}
 }

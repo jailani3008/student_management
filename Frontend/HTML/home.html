@@ -5,41 +5,40 @@
   <title>Attendance Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   
-  <!-- Google Fonts - Lobster -->
+  <!-- Google Fonts - Lobster for navbar/title -->
   <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet" />
-  
+
   <!-- Navbar CSS -->
   <link rel="stylesheet" href="../CSS/navbar.css" />
 
-  <!-- Page specific CSS -->
+  <!-- Dashboard CSS -->
   <link rel="stylesheet" href="../CSS/home.css" />
 </head>
 <body>
-  
-  <!-- Navbar placeholder -->
-<div id="navbar-placeholder"></div>
-<script>
-fetch('../HTML/navbar.html')
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById('navbar-placeholder').innerHTML = html;
-    // Load JS after navbar inserted
-    const script = document.createElement('script');
-    script.src = '../JS/navbar.js';
-    document.body.appendChild(script);
-  });
-</script>
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+  <script>
+    fetch('../HTML/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar-placeholder').innerHTML = html;
+        // Load navbar JS after insertion
+        const script = document.createElement('script');
+        script.src = '../JS/navbar.js';
+        document.body.appendChild(script);
+      });
+  </script>
 
-  <div class="container">
-    <div class="box" id="totalStudents">Total Students: 0</div>
-    <div class="box" id="present">Present: 0</div>
-    <div class="box" id="absent">Absent: 0</div>
-    <div class="box" id="percentage">Percentage: 0%</div>
-  </div>
+  <main class="dashboard-main">
+    <div class="container dashboard-dashboard">
+      <div class="box dashboard-box" id="totalStudents">Total Students: 0</div>
+      <div class="box dashboard-box" id="present">Present: 0</div>
+      <div class="box dashboard-box" id="absent">Absent: 0</div>
+      <div class="box dashboard-box" id="percentage">Percentage: 0%</div>
+    </div>
+  </main>
 
-  <!-- Config with API base URL -->
   <script src="../JS/config.js"></script>
-  <!-- Page logic in TypeScript compiled to JS -->
   <script src="../JS/home.js"></script>
 </body>
 </html>

@@ -10,26 +10,26 @@
 
   <!-- Navbar CSS -->
   <link rel="stylesheet" href="../CSS/navbar.css" />
+
   <!-- Page CSS -->
   <link rel="stylesheet" href="../CSS/studentdetail.css" />
 </head>
 <body>
   <!-- Navbar placeholder -->
-<div id="navbar-placeholder"></div>
-<script>
-fetch('../HTML/navbar.html')
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById('navbar-placeholder').innerHTML = html;
-    // Load JS after navbar inserted
-    const script = document.createElement('script');
-    script.src = '../JS/navbar.js';
-    document.body.appendChild(script);
-  });
-</script>
+  <div id="navbar-placeholder"></div>
+  <script>
+    fetch('../HTML/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar-placeholder').innerHTML = html;
+        // Load navbar JS after insertion
+        const script = document.createElement('script');
+        script.src = '../JS/navbar.js';
+        document.body.appendChild(script);
+      });
+  </script>
 
-
-  <div class="container">
+  <main class="container animate-fade-in">
     <h2>Student Details</h2>
     <table id="studentTable">
       <thead>
@@ -46,7 +46,7 @@ fetch('../HTML/navbar.html')
         <!-- Rows inserted by JS -->
       </tbody>
     </table>
-  </div>
+  </main>
 
   <!-- Config for API -->
   <script src="../JS/config.js"></script>

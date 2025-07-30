@@ -1,69 +1,94 @@
-body {
-  /* Use a nice font */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(90deg, rgba(104, 182, 205, 1), rgba(126, 102, 196, 1), rgba(107, 163, 219, 1));
-  min-height: 100vh;
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0; padding: 0;
 }
 
-.container {
-  /* Grid to layout four info boxes */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(120deg, #ace0f9 0%, #d4fc79 100%);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* Main dashboard container */
+.dashboard-main {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 75px;
+  padding-bottom: 40px;
+}
+
+/* Grid with animated cards */
+.container.dashboard-dashboard {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  max-width: 700px;
-  margin: 100px auto;
-  padding: 0 20px;
+  gap: 28px;
+  max-width: 850px;
+  width: 98vw;
+  margin: 0 auto;
+  padding: 0 14px;
+  perspective: 800px; /* subtle 3d tilt on hover */
 }
 
-.box {
-  background: white;
-  padding: 30px 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+.dashboard-box {
+  background: rgba(255,255,255,0.92);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px #85d9fa33, 0 2px 14px #d0ffd88c;
+  padding: 38px 10px 31px 10px;
   text-align: center;
-  font-size: 1.4rem;
-  font-weight: 600;
+  font-size: 1.49rem;
+  font-weight: 700;
   color: #333;
+  position: relative;
   user-select: none;
-  transition: transform 0.2s ease;
+  transition: 
+    transform 0.25s cubic-bezier(.43,1.25,.46,1.04),
+    box-shadow 0.25s,
+    background 0.25s;
+  opacity: 0;
+  animation: dashPopIn 0.65s cubic-bezier(.51,1.08,.46,.81) forwards;
 }
 
-.box:hover {
-  transform: translateY(-5px);
+/* Each card pops in one after the other */
+.dashboard-box:nth-child(1) { animation-delay: .21s; }
+.dashboard-box:nth-child(2) { animation-delay: .31s; }
+.dashboard-box:nth-child(3) { animation-delay: .41s; }
+.dashboard-box:nth-child(4) { animation-delay: .51s; }
+
+@keyframes dashPopIn {
+  0%   { opacity: 0; transform: translateY(35px) scale(.94) rotateX(14deg);}
+  40%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0);}
 }
 
-/* Different background colors for each box */
-#totalStudents {
-  background-color: #e0f7fa;
+/* Hover: float and vibrant shadow */
+.dashboard-box:hover {
+  transform: translateY(-7px) scale(1.035) rotateY(2deg);
+  box-shadow: 0 14px 38px #72caf9a0, 0 8px 25px #fcffd0a2;
+  z-index: 20;
 }
 
-#present {
-  background-color: #c8e6c9;
-  color: #2e7d32;
-}
+/* Unique backgrounds and accent colors */
+#totalStudents { background: linear-gradient(135deg, #e0f7fa, #d1fff6 95%); color: #2996ab; }
+#present      { background: linear-gradient(135deg, #e3ffd8 0%, #beffc8 99%); color: #2e7d32; }
+#absent       { background: linear-gradient(135deg, #ffd6e1, #ffd6bc 100%); color: #d0312d; }
+#percentage   { background: linear-gradient(135deg, #fffbe6, #e6f7ff 100%); color: #fed000; text-shadow: 0 1px 2px #fed90077; }
 
-#absent {
-  background-color: #ffcdd2;
-  color: #c62828;
-}
-
-#percentage {
-  background-color: #fff9c4;
-  color: #f9a825;
-}
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .container {
-    margin: 60px 10px;
-    grid-template-columns: 1fr;
-    gap: 15px;
+/* Responsive: stack cards and adjust sizing */
+@media (max-width: 900px) {
+  .container.dashboard-dashboard {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
   }
-
-  .box {
-    font-size: 1.2rem;
-    padding: 20px 15px;
-  }
+}
+@media (max-width: 620px) {
+  .dashboard-main { padding-top: 20px; }
+  .container.dashboard-dashboard { grid-template-columns: 1fr; gap: 12px; padding: 0 4px;}
+  .dashboard-box { font-size: 1.1rem; padding: 19px 5px 17px 5px; }
+}
+@media (max-width: 420px) {
+  .dashboard-box { border-radius: 13px; font-size: 1rem; }
 }

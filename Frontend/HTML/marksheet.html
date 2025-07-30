@@ -1,59 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Student Marksheet</title>
-  <!-- Optional: Correct the Lobster font typo for nav title -->
-  <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../CSS/navbar.css">
-  <link rel="stylesheet" href="../CSS/marksheet.css">
+  <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/navbar.css" />
+  <link rel="stylesheet" href="../CSS/marksheet.css" />
 </head>
 <body>
-<div id="navbar-placeholder"></div>
-<script>
-fetch('../HTML/navbar.html')
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById('navbar-placeholder').innerHTML = html;
-    // Load JS after navbar inserted
-    const script = document.createElement('script');
-    script.src = '../JS/navbar.js';
-    document.body.appendChild(script);
-  });
-</script>
+  <div id="navbar-placeholder"></div>
+  <script>
+    fetch('../HTML/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar-placeholder').innerHTML = html;
+        const script = document.createElement('script');
+        script.src = '../JS/navbar.js';
+        document.body.appendChild(script);
+      });
+  </script>
 
+  <main class="marksheet-main">
+    <section class="marksheet-section animate-in">
+      <h1>Student Marksheet</h1>
+      <form id="marksForm">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Tamil</th>
+              <th>English</th>
+              <th>Math</th>
+              <th>Science</th>
+              <th>Social</th>
+              <th>Average</th>
+            </tr>
+          </thead>
+          <tbody id="marksTableBody"></tbody>
+        </table>
+        <button type="submit">Submit Marks</button>
+      </form>
+      <h2 id="overallAverage">Overall Average: 0</h2>
+    </section>
+  </main>
 
-  <!-- <div class="navbar">
-    <h1 class="title">Student Management System</h1>
-    <div class="nav-link">
-      <a href="/HTML/home.html" class="nav-button">Home</a>
-      <a href="/HTML/attendance.html" class="nav-button">Attendance</a>
-      <a href="/HTML/studentdetail.html" class="nav-button">Student Detail</a>
-      <a href="/HTML/adddetails.html" class="nav-button">ADD Detail</a>
-      <a href="/HTML/marksheet.html" class="nav-button">Mark Sheet</a>
-      <a href="/HTML/logout.html" class="nav-button">LogOut</a>
-    </div>
-  </div> -->
-  <h1>Student Marksheet</h1>
-  <form id="marksForm">
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Tamil</th>
-          <th>English</th>
-          <th>Math</th>
-          <th>Science</th>
-          <th>Social</th>
-          <th>Average</th>
-        </tr>
-      </thead>
-      <tbody id="marksTableBody"></tbody>
-    </table>
-    <button type="submit">Submit Marks</button>
-  </form>
-  <h2 id="overallAverage">Overall Average: 0</h2>
   <script src="../JS/config.js"></script>
-  <script type="module" src="../JS/marksheet.js"></script>
+  <script src="../JS/marksheet.js"></script>
 </body>
 </html>

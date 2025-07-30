@@ -4,50 +4,48 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Attendance</title>
-
-  <!-- Load Navbar CSS -->
+  <!-- Navbar and main Attendance page CSS -->
   <link rel="stylesheet" href="../CSS/navbar.css" />
-  <!-- Your attendance page CSS -->
   <link rel="stylesheet" href="../CSS/attendance.css" />
 </head>
 <body>
-  <!-- Navbar placeholder -->
-<div id="navbar-placeholder"></div>
-<script>
-fetch('../HTML/navbar.html')
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById('navbar-placeholder').innerHTML = html;
-    // Load JS after navbar inserted
-    const script = document.createElement('script');
-    script.src = '../JS/navbar.js';
-    document.body.appendChild(script);
-  });
-</script>
+  <!-- Navbar (loaded dynamically) -->
+  <div id="navbar-placeholder"></div>
+  <script>
+    fetch('../HTML/navbar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('navbar-placeholder').innerHTML = html;
+        // Load navbar JS after insertion
+        const script = document.createElement('script');
+        script.src = '../JS/navbar.js';
+        document.body.appendChild(script);
+      });
+  </script>
 
+  <main class="attendance-main">
+    <section class="attendance-section animate-in">
+      <h1>Student Attendance</h1>
+      <form id="attendanceForm">
+        <table>
+          <thead>
+            <tr>
+              <th>S.NO</th>
+              <th>Student Name</th>
+              <th class="present">Present</th>
+              <th class="absent">Absent</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody">
+            <!-- Students will be inserted here -->
+          </tbody>
+        </table>
+        <button type="submit" class="attendance-submit">Submit Attendance</button>
+      </form>
+    </section>
+  </main>
 
-  <h1>Student Attendance</h1>
-
-  <form id="attendanceForm">
-    <table>
-      <thead>
-        <tr>
-          <th>S.NO</th>
-          <th>Student Name</th>
-          <th class="present">Present</th>
-          <th class="absent">Absent</th>
-        </tr>
-      </thead>
-      <tbody id="attendanceTableBody">
-        <!-- Students will be inserted here -->
-      </tbody>
-    </table>
-    <button type="submit">Submit Attendance</button>
-  </form>
-
-  <!-- Config with your API base URL -->
   <script src="../JS/config.js"></script>
-  <!-- Attendance page logic - Assuming your script is compiled or plain JS -->
   <script src="../JS/attendance.js"></script>
 </body>
 </html>
