@@ -211,12 +211,12 @@ app.delete('/api/deleteStudent/:studentId', function (req, res) { return __await
         switch (_a.label) {
             case 0:
                 studentId = req.params.studentId;
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 6, , 7]);
                 return [4 /*yield*/, pool.connect()];
-            case 2:
+            case 1:
                 client = _a.sent();
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 6, 8, 9]);
                 return [4 /*yield*/, client.query('BEGIN')];
             case 3:
                 _a.sent();
@@ -226,20 +226,25 @@ app.delete('/api/deleteStudent/:studentId', function (req, res) { return __await
                 return [4 /*yield*/, client.query('COMMIT')];
             case 5:
                 _a.sent();
-                client.release();
                 if (result.rows.length > 0) {
                     res.status(200).send('Student deleted successfully');
                 }
                 else {
                     res.status(404).send('Student not found');
                 }
-                return [3 /*break*/, 7];
+                return [3 /*break*/, 9];
             case 6:
                 error_4 = _a.sent();
+                return [4 /*yield*/, client.query('ROLLBACK')];
+            case 7:
+                _a.sent();
                 console.error('Error deleting student:', error_4);
-                res.status(500).send('Error deleting student');
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                res.status(500).send('Error deleting student: ' + error_4.message);
+                return [3 /*break*/, 9];
+            case 8:
+                client.release();
+                return [7 /*endfinally*/];
+            case 9: return [2 /*return*/];
         }
     });
 }); });
