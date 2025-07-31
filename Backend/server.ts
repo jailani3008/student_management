@@ -113,23 +113,28 @@ app.get('/api/getStudents', async (req:any, res:any) => {
 /******* DELETE STUDENT DETAIL ************/
 app.delete('/api/deleteStudent/:studentId', async (req:any, res:any) => {
   const studentId = req.params.studentId;
+  const client = await pool.connect();
   try {
-    const client = await pool.connect();
     await client.query('BEGIN');
-    const result = await client.query('DELETE FROM students WHERE studentid = $1 RETURNING studentid', [studentId]);
+    const result = await client.query(
+      'DELETE FROM students WHERE studentid = $1 RETURNING studentid',
+      [studentId]
+    );
     await client.query('COMMIT');
-    client.release();
-
     if (result.rows.length > 0) {
       res.status(200).send('Student deleted successfully');
     } else {
       res.status(404).send('Student not found');
     }
-  } catch (error) {
+  } catch (error:any) {
+    await client.query('ROLLBACK');
     console.error('Error deleting student:', error);
-    res.status(500).send('Error deleting student');
+    res.status(500).send('Error deleting student: ' + error.message);
+  } finally {
+    client.release();
   }
 });
+
 
 /***** GET STUDENT DETAIL USING STUDENTID *****/
 app.get('/api/getStudents/:studentId', async (req:any, res:any) => {
