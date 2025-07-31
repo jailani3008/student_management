@@ -11,7 +11,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
 
-// Pool configured with Neon connection string and SSL for Neon
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
@@ -25,10 +24,10 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve frontend static files (adjust the path according to your project structure)
 app.use(express.static(path.join(__dirname, '../Frontend')));
 
-/***************** REGISTER ****************/
+
+// **************** REGISTRATION ****************
 app.post('/register', async (req:any, res:any) => {
   const { username, password } = req.body;
   try {
@@ -42,7 +41,7 @@ app.post('/register', async (req:any, res:any) => {
       user: result.rows[0],
     });
   } catch (err:any) {
-    if (err.code === '23505') {
+    if (err.code === '23505') { // Unique violation - username exists
       res.status(409).send('Username already exists');
     } else {
       console.error('Register error:', err);
@@ -51,7 +50,8 @@ app.post('/register', async (req:any, res:any) => {
   }
 });
 
-/***************** LOGIN ******************/
+
+// **************** LOGIN ****************
 app.post('/login', async (req:any, res:any) => {
   const { username, password } = req.body;
   try {
@@ -59,8 +59,7 @@ app.post('/login', async (req:any, res:any) => {
     const user = result.rows[0];
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      res.status(401).send('Invalid credentials');
-      return;
+      return res.status(401).send('Invalid credentials');
     }
 
     const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '1h' });
@@ -71,78 +70,81 @@ app.post('/login', async (req:any, res:any) => {
   }
 });
 
-/*********** ADD STUDENT DETAIL ************/
+
+// ********** ADD STUDENT DETAIL **********
 app.post('/api/addStudent', async (req:any, res:any) => {
   const { studentId, name, class: classValue, email } = req.body;
+  let client;
   try {
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-      await client.query(
-        'INSERT INTO students(studentid, name, class, email) VALUES ($1, $2, $3, $4) RETURNING studentid',
-        [studentId, name, classValue, email]
-      );
-      await client.query('COMMIT');
-      res.status(201).send('Student added successfully');
-    } catch (error) {
-      await client.query('ROLLBACK');
-      console.error('Error adding student:', error);
-      res.status(500).json({ error: 'Error adding student' });
-    } finally {
-      client.release();
-    }
+    client = await pool.connect();
+    await client.query('BEGIN');
+    await client.query(
+      'INSERT INTO students(studentid, name, class, email) VALUES ($1, $2, $3, $4) RETURNING studentid',
+      [studentId, name, classValue, email]
+    );
+    await client.query('COMMIT');
+    res.status(201).send('Student added successfully');
   } catch (error) {
-    console.error('Error connecting to the database:', error);
-    res.status(500).send('Error connecting to the database');
+    if (client) await client.query('ROLLBACK');
+    console.error('Error adding student:', error);
+    res.status(500).json({ error: 'Error adding student' });
+  } finally {
+    if (client) client.release();
   }
 });
 
-/********** GET ALL STUDENT DETAIL *********/
+
+// ********** GET ALL STUDENT DETAIL **********
 app.get('/api/getStudents', async (req:any, res:any) => {
+  let client;
   try {
-    const client = await pool.connect();
+    client = await pool.connect();
     const result = await client.query('SELECT * FROM students');
-    client.release();
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching students:', error);
     res.status(500).send('Error fetching students');
+  } finally {
+    if (client) client.release();
   }
 });
 
-/******* DELETE STUDENT DETAIL ************/
+
+// ******** DELETE STUDENT DETAIL ********
 app.delete('/api/deleteStudent/:studentId', async (req:any, res:any) => {
   const studentId = req.params.studentId;
-  const client = await pool.connect();
+  let client;
   try {
+    client = await pool.connect();
     await client.query('BEGIN');
     const result = await client.query(
       'DELETE FROM students WHERE studentid = $1 RETURNING studentid',
       [studentId]
     );
     await client.query('COMMIT');
+
     if (result.rows.length > 0) {
       res.status(200).send('Student deleted successfully');
     } else {
       res.status(404).send('Student not found');
     }
   } catch (error:any) {
-    await client.query('ROLLBACK');
+    if (client) await client.query('ROLLBACK');
     console.error('Error deleting student:', error);
     res.status(500).send('Error deleting student: ' + error.message);
   } finally {
-    client.release();
+    if (client) client.release();
   }
 });
 
 
-/***** GET STUDENT DETAIL USING STUDENTID *****/
+// ***** GET STUDENT DETAIL BY ID *****
 app.get('/api/getStudents/:studentId', async (req:any, res:any) => {
   const studentId = req.params.studentId;
+  let client;
   try {
-    const client = await pool.connect();
+    client = await pool.connect();
     const result = await client.query('SELECT * FROM students WHERE studentid = $1', [studentId]);
-    client.release();
     if (result.rows.length > 0) {
       res.json(result.rows[0]);
     } else {
@@ -151,10 +153,13 @@ app.get('/api/getStudents/:studentId', async (req:any, res:any) => {
   } catch (error) {
     console.error('Error fetching student:', error);
     res.status(500).send('Error fetching student');
+  } finally {
+    if (client) client.release();
   }
 });
 
-// Update student
+
+// ****** UPDATE STUDENT DETAIL ******
 app.put('/api/students/:studentId', async (req:any, res:any) => {
   const { studentId } = req.params;
   const { name, class: className, email } = req.body;
@@ -166,9 +171,11 @@ app.put('/api/students/:studentId', async (req:any, res:any) => {
        RETURNING *`,
       [name, className, email, studentId]
     );
+
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Student not found' });
     }
+
     res.json(result.rows[0]);
   } catch (error) {
     console.error('Error updating student:', error);
@@ -176,11 +183,12 @@ app.put('/api/students/:studentId', async (req:any, res:any) => {
   }
 });
 
-/***** Attendance - Record attendance *****/
+
+// ****** RECORD ATTENDANCE *******
 app.post('/api/attendance', async (req:any, res:any) => {
   const { records } = req.body;
   try {
-    const insertPromises = records.map((record: { studentId: any; status: any; })=>
+    const insertPromises = records.map((record: { studentId: any; status: any; }) =>
       pool.query(
         'INSERT INTO attendance (studentid, status, attendance_date) VALUES ($1, $2, CURRENT_DATE)',
         [record.studentId, record.status]
@@ -194,7 +202,8 @@ app.post('/api/attendance', async (req:any, res:any) => {
   }
 });
 
-/**** Attendance count for dashboard */
+
+// ****** ATTENDANCE COUNT FOR DASHBOARD ******
 app.get('/attendance/count', async (req:any, res:any) => {
   try {
     const totalStudentsResult = await pool.query('SELECT COUNT(*) FROM students');
@@ -222,7 +231,8 @@ app.get('/attendance/count', async (req:any, res:any) => {
   }
 });
 
-/******* Latest attendance summary ******/
+
+// ******** LATEST ATTENDANCE SUMMARY *********
 app.get("/latest-attendance-summary", async (req:any, res:any) => {
   try {
     const latestTimestampResult = await pool.query(`
@@ -252,7 +262,8 @@ app.get("/latest-attendance-summary", async (req:any, res:any) => {
   }
 });
 
-/****** Mark sheet entry ******/
+
+// ******** MARKSHEET ENTRY *********
 app.post('/api/marks', async (req:any, res:any) => {
   try {
     for (const record of req.body.records) {
@@ -268,6 +279,7 @@ app.post('/api/marks', async (req:any, res:any) => {
     res.status(500).send("Error storing marks.");
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

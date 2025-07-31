@@ -46,7 +46,6 @@ var path = require('path');
 var app = express();
 var port = process.env.PORT || 3000;
 var jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
-// Pool configured with Neon connection string and SSL for Neon
 var pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
@@ -57,9 +56,8 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// Serve frontend static files (adjust the path according to your project structure)
 app.use(express.static(path.join(__dirname, '../Frontend')));
-/***************** REGISTER ****************/
+// **************** REGISTRATION ****************
 app.post('/register', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, username, password, hashedPassword, result, err_1;
     return __generator(this, function (_b) {
@@ -82,7 +80,7 @@ app.post('/register', function (req, res) { return __awaiter(_this, void 0, void
                 return [3 /*break*/, 5];
             case 4:
                 err_1 = _b.sent();
-                if (err_1.code === '23505') {
+                if (err_1.code === '23505') { // Unique violation - username exists
                     res.status(409).send('Username already exists');
                 }
                 else {
@@ -94,7 +92,7 @@ app.post('/register', function (req, res) { return __awaiter(_this, void 0, void
         }
     });
 }); });
-/***************** LOGIN ******************/
+// **************** LOGIN ****************
 app.post('/login', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _a, username, password, result, user, _b, token, err_2;
     return __generator(this, function (_c) {
@@ -116,8 +114,7 @@ app.post('/login', function (req, res) { return __awaiter(_this, void 0, void 0,
                 _c.label = 4;
             case 4:
                 if (_b) {
-                    res.status(401).send('Invalid credentials');
-                    return [2 /*return*/];
+                    return [2 /*return*/, res.status(401).send('Invalid credentials')];
                 }
                 token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: '1h' });
                 res.json({ token: token });
@@ -131,92 +128,90 @@ app.post('/login', function (req, res) { return __awaiter(_this, void 0, void 0,
         }
     });
 }); });
-/*********** ADD STUDENT DETAIL ************/
+// ********** ADD STUDENT DETAIL **********
 app.post('/api/addStudent', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var _a, studentId, name, classValue, email, client, error_1, error_2;
+    var _a, studentId, name, classValue, email, client, error_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _a = req.body, studentId = _a.studentId, name = _a.name, classValue = _a.class, email = _a.email;
                 _b.label = 1;
             case 1:
-                _b.trys.push([1, 11, , 12]);
+                _b.trys.push([1, 6, 9, 10]);
                 return [4 /*yield*/, pool.connect()];
             case 2:
                 client = _b.sent();
-                _b.label = 3;
-            case 3:
-                _b.trys.push([3, 7, 9, 10]);
                 return [4 /*yield*/, client.query('BEGIN')];
-            case 4:
+            case 3:
                 _b.sent();
                 return [4 /*yield*/, client.query('INSERT INTO students(studentid, name, class, email) VALUES ($1, $2, $3, $4) RETURNING studentid', [studentId, name, classValue, email])];
-            case 5:
+            case 4:
                 _b.sent();
                 return [4 /*yield*/, client.query('COMMIT')];
-            case 6:
+            case 5:
                 _b.sent();
                 res.status(201).send('Student added successfully');
                 return [3 /*break*/, 10];
-            case 7:
+            case 6:
                 error_1 = _b.sent();
+                if (!client) return [3 /*break*/, 8];
                 return [4 /*yield*/, client.query('ROLLBACK')];
-            case 8:
+            case 7:
                 _b.sent();
+                _b.label = 8;
+            case 8:
                 console.error('Error adding student:', error_1);
                 res.status(500).json({ error: 'Error adding student' });
                 return [3 /*break*/, 10];
             case 9:
-                client.release();
+                if (client)
+                    client.release();
                 return [7 /*endfinally*/];
-            case 10: return [3 /*break*/, 12];
-            case 11:
-                error_2 = _b.sent();
-                console.error('Error connecting to the database:', error_2);
-                res.status(500).send('Error connecting to the database');
-                return [3 /*break*/, 12];
-            case 12: return [2 /*return*/];
+            case 10: return [2 /*return*/];
         }
     });
 }); });
-/********** GET ALL STUDENT DETAIL *********/
+// ********** GET ALL STUDENT DETAIL **********
 app.get('/api/getStudents', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var client, result, error_3;
+    var client, result, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 3, , 4]);
+                _a.trys.push([0, 3, 4, 5]);
                 return [4 /*yield*/, pool.connect()];
             case 1:
                 client = _a.sent();
                 return [4 /*yield*/, client.query('SELECT * FROM students')];
             case 2:
                 result = _a.sent();
-                client.release();
                 res.json(result.rows);
-                return [3 /*break*/, 4];
+                return [3 /*break*/, 5];
             case 3:
-                error_3 = _a.sent();
-                console.error('Error fetching students:', error_3);
+                error_2 = _a.sent();
+                console.error('Error fetching students:', error_2);
                 res.status(500).send('Error fetching students');
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 4:
+                if (client)
+                    client.release();
+                return [7 /*endfinally*/];
+            case 5: return [2 /*return*/];
         }
     });
 }); });
-/******* DELETE STUDENT DETAIL ************/
+// ******** DELETE STUDENT DETAIL ********
 app.delete('/api/deleteStudent/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var studentId, client, result, error_4;
+    var studentId, client, result, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 studentId = req.params.studentId;
-                return [4 /*yield*/, pool.connect()];
+                _a.label = 1;
             case 1:
-                client = _a.sent();
-                _a.label = 2;
+                _a.trys.push([1, 6, 9, 10]);
+                return [4 /*yield*/, pool.connect()];
             case 2:
-                _a.trys.push([2, 6, 8, 9]);
+                client = _a.sent();
                 return [4 /*yield*/, client.query('BEGIN')];
             case 3:
                 _a.sent();
@@ -232,58 +227,65 @@ app.delete('/api/deleteStudent/:studentId', function (req, res) { return __await
                 else {
                     res.status(404).send('Student not found');
                 }
-                return [3 /*break*/, 9];
+                return [3 /*break*/, 10];
             case 6:
-                error_4 = _a.sent();
+                error_3 = _a.sent();
+                if (!client) return [3 /*break*/, 8];
                 return [4 /*yield*/, client.query('ROLLBACK')];
             case 7:
                 _a.sent();
-                console.error('Error deleting student:', error_4);
-                res.status(500).send('Error deleting student: ' + error_4.message);
-                return [3 /*break*/, 9];
+                _a.label = 8;
             case 8:
-                client.release();
+                console.error('Error deleting student:', error_3);
+                res.status(500).send('Error deleting student: ' + error_3.message);
+                return [3 /*break*/, 10];
+            case 9:
+                if (client)
+                    client.release();
                 return [7 /*endfinally*/];
-            case 9: return [2 /*return*/];
+            case 10: return [2 /*return*/];
         }
     });
 }); });
-/***** GET STUDENT DETAIL USING STUDENTID *****/
+// ***** GET STUDENT DETAIL BY ID *****
 app.get('/api/getStudents/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var studentId, client, result, error_5;
+    var studentId, client, result, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 studentId = req.params.studentId;
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 4, , 5]);
+                _a.trys.push([1, 4, 5, 6]);
                 return [4 /*yield*/, pool.connect()];
             case 2:
                 client = _a.sent();
                 return [4 /*yield*/, client.query('SELECT * FROM students WHERE studentid = $1', [studentId])];
             case 3:
                 result = _a.sent();
-                client.release();
                 if (result.rows.length > 0) {
                     res.json(result.rows[0]);
                 }
                 else {
                     res.status(404).send('Student not found');
                 }
-                return [3 /*break*/, 5];
+                return [3 /*break*/, 6];
             case 4:
-                error_5 = _a.sent();
-                console.error('Error fetching student:', error_5);
+                error_4 = _a.sent();
+                console.error('Error fetching student:', error_4);
                 res.status(500).send('Error fetching student');
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 5:
+                if (client)
+                    client.release();
+                return [7 /*endfinally*/];
+            case 6: return [2 /*return*/];
         }
     });
 }); });
-// Update student
+// ****** UPDATE STUDENT DETAIL ******
 app.put('/api/students/:studentId', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var studentId, _a, name, className, email, result, error_6;
+    var studentId, _a, name, className, email, result, error_5;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -301,15 +303,15 @@ app.put('/api/students/:studentId', function (req, res) { return __awaiter(_this
                 res.json(result.rows[0]);
                 return [3 /*break*/, 4];
             case 3:
-                error_6 = _b.sent();
-                console.error('Error updating student:', error_6);
+                error_5 = _b.sent();
+                console.error('Error updating student:', error_5);
                 res.status(500).json({ message: 'Server error' });
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); });
-/***** Attendance - Record attendance *****/
+// ****** RECORD ATTENDANCE *******
 app.post('/api/attendance', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var records, insertPromises, err_3;
     return __generator(this, function (_a) {
@@ -336,7 +338,7 @@ app.post('/api/attendance', function (req, res) { return __awaiter(_this, void 0
         }
     });
 }); });
-/**** Attendance count for dashboard */
+// ****** ATTENDANCE COUNT FOR DASHBOARD ******
 app.get('/attendance/count', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var totalStudentsResult, totalStudents, attendanceResult, _a, present, absent, percentage, err_4;
     return __generator(this, function (_b) {
@@ -368,9 +370,9 @@ app.get('/attendance/count', function (req, res) { return __awaiter(_this, void 
         }
     });
 }); });
-/******* Latest attendance summary ******/
+// ******** LATEST ATTENDANCE SUMMARY *********
 app.get("/latest-attendance-summary", function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var latestTimestampResult, latestTimestamp, summaryResult, error_7;
+    var latestTimestampResult, latestTimestamp, summaryResult, error_6;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -389,15 +391,15 @@ app.get("/latest-attendance-summary", function (req, res) { return __awaiter(_th
                 res.json({ date: latestTimestamp, summary: summaryResult.rows });
                 return [3 /*break*/, 4];
             case 3:
-                error_7 = _b.sent();
-                console.error("Error getting latest attendance summary:", error_7);
+                error_6 = _b.sent();
+                console.error("Error getting latest attendance summary:", error_6);
                 res.status(500).send("Server error");
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); });
-/****** Mark sheet entry ******/
+// ******** MARKSHEET ENTRY *********
 app.post('/api/marks', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var _i, _a, record, err_5;
     return __generator(this, function (_b) {
